@@ -8,27 +8,27 @@ from lib.share import SI
 
 class FIleMenu:
     def __init__(self):
-        SI.ui.fileOpenAction.triggered.connect(self.OpenFile)
-        SI.ui.saveAsAction.triggered.connect(self.SaveFile)
-        SI.ui.cleanHistoryAction.triggered.connect(self.WrapOutHistory)
-        SI.historyFilePath = []
+        SIobj.ui.fileOpenAction.triggered.connect(self.OpenFile)
+        SIobj.ui.saveAsAction.triggered.connect(self.SaveFile)
+        SIobj.ui.cleanHistoryAction.triggered.connect(self.WrapOutHistory)
+        SIobj.historyFilePath = []
 
         #读取历史图片路径
         #txt中记录的图片地址从上到下为从新到旧
         with open ("./historyFile.txt",'r') as file:
             for path in file:
-                SI.historyFilePath.append(path.strip())
+                SIobj.historyFilePath.append(path.strip())
 
-        print(SI.historyFilePath)
+        print(SIobj.historyFilePath)
 
         #加载最近打开图片窗口
         qfile_historyFile_stats = QFile("./HistoryFile.ui")
         qfile_historyFile_stats.open(QFile.ReadOnly)
         qfile_historyFile_stats.close()
-        SI.historyPathViewUi = QUiLoader().load(qfile_historyFile_stats)
-        SI.ui.recentFileAction.triggered.connect(self.ViewRecentFile)
-        SI.historyPathViewUi.listHistoryFile.itemClicked.connect(self.RecentFileShowCurrentItem)
-        SI.historyPathViewUi.btnVerifyHistoryFile.clicked.connect(self.VerifyHistoryFile)
+        SIobj.historyPathViewUi = QUiLoader().load(qfile_historyFile_stats)
+        SIobj.ui.recentFileAction.triggered.connect(self.ViewRecentFile)
+        SIobj.historyPathViewUi.listHistoryFile.itemClicked.connect(self.RecentFileShowCurrentItem)
+        SIobj.historyPathViewUi.btnVerifyHistoryFile.clicked.connect(self.VerifyHistoryFile)
 
 
 
@@ -40,29 +40,29 @@ class FIleMenu:
 
     def OpenFile(self):
         filePath,fileType = QFileDialog.getOpenFileName(
-            SI.ui,
+            SIobj.ui,
             "选择图片路径",
             r"d:",
             "(*.png *.jpg *.bmp)"
         )
 
-        SI.cvImg = self.readFile(filePath)
-        SI.showCvImg = SI.cvImg
-        SI.ShowPic(SI.showCvImg,SI.ui.labelShowImg)
-        SI.oriCvW = SI.showCvW = SI.cvImg.shape[1]
-        SI.oriCvH = SI.showCvH = SI.cvImg.shape[0]
-        SI.resize = Resize()
+        SIobj.cvImg = self.readFile(filePath)
+        SIobj.showCvImg = SIobj.cvImg
+        SIobj.ShowPic(SIobj.showCvImg,SIobj.ui.labelShowImg)
+        SIobj.oriCvW = SIobj.showCvW = SIobj.cvImg.shape[1]
+        SIobj.oriCvH = SIobj.showCvH = SIobj.cvImg.shape[0]
+        SIobj.resize = Resize()
         Resize.showImgInfoRefresh(Resize)
 
         #历史记录最多存储10条，超过10条以队列的形式从队尾顶出
-        if len(SI.historyFilePath) >= 10:
-            SI.historyFilePath.pop()
-        SI.historyFilePath.insert(0,filePath)
+        if len(SIobj.historyFilePath) >= 10:
+            SIobj.historyFilePath.pop()
+        SIobj.historyFilePath.insert(0,filePath)
         #每次更新状态后重新写最近打开历史记录文件
         with open ("./historyFile.txt",'w') as file:
-            for path in SI.historyFilePath:
+            for path in SIobj.historyFilePath:
                 file.write(path+'\n')
-        print(SI.historyFilePath)
+        print(SIobj.historyFilePath)
 
 
 
@@ -73,32 +73,32 @@ class FIleMenu:
         # self.ui.labelShowImg.setPixmap(img)
 
         # #适当调整图片大小的逻辑
-        # if(SI.cvImg.shape[1]>1280 or SI.cvImg.shape[0]>720):
-        #     SI.ui.labelShowImg.setMaximumSize(1280,int(1280/SI.showCvW*SI.showCvH))
+        # if(SIobj.cvImg.shape[1]>1280 or SIobj.cvImg.shape[0]>720):
+        #     SIobj.ui.labelShowImg.setMaximumSize(1280,int(1280/SIobj.showCvW*SIobj.showCvH))
 
 
     def SaveFile(self):
-        filePath = QFileDialog.getExistingDirectory(SI.ui,"选择保存的路径")
-        cv2.imwrite("TempName",SI.showCvImg)
+        filePath = QFileDialog.getExistingDirectory(SIobj.ui,"选择保存的路径")
+        cv2.imwrite("TempName",SIobj.showCvImg)
 
     def WrapOutHistory(self):
-        SI.historyFilePath = []
+        SIobj.historyFilePath = []
         with open("./historyFile.txt",'w') as file:
             file.write('')
 
     def RenewListFileHistory(self):
-        SI.historyPathViewUi.listHistoryFile.clear()
-        for path in SI.historyFilePath:
-            SI.historyPathViewUi.listHistoryFile.addItem(path)
+        SIobj.historyPathViewUi.listHistoryFile.clear()
+        for path in SIobj.historyFilePath:
+            SIobj.historyPathViewUi.listHistoryFile.addItem(path)
 
     def ViewRecentFile(self):
         self.RenewListFileHistory()
-        SI.historyPathViewUi.show()
+        SIobj.historyPathViewUi.show()
 
     def RecentFileShowCurrentItem(self):
-        path = SI.historyPathViewUi.listHistoryFile.currentItem().text()
+        path = SIobj.historyPathViewUi.listHistoryFile.currentItem().text()
         imgCvPreview = self.readFile(path)
-        SI.ShowPic(imgCvPreview,SI.historyPathViewUi.labelHistoryPreview)
+        SIobj.ShowPic(imgCvPreview,SIobj.historyPathViewUi.labelHistoryPreview)
 
         try:
             channelsNum = imgCvPreview.shape[2]
@@ -108,12 +108,12 @@ class FIleMenu:
         else:
             imgType = "RGB888"
 
-        SI.historyPathViewUi.labelPreviewInfo.setText(
+        SIobj.historyPathViewUi.labelPreviewInfo.setText(
             "size: "+str(imgCvPreview.shape[1])+'x'+str(imgCvPreview.shape[0])+'\t'+
             "channels: "+str(channelsNum)+'\t'+"type: "+imgType)
 
     def VerifyHistoryFile(self):
-        SI.historyPathViewUi.hide()
+        SIobj.historyPathViewUi.hide()
 
 
 
@@ -126,124 +126,124 @@ class Resize:
     def __init__(self):
 
         #设置宽度滑块最大/小值
-        SI.ui.sliderW.setMinimum(1)
-        SI.ui.sliderW.setMaximum(SI.oriCvW)
+        SIobj.ui.sliderW.setMinimum(1)
+        SIobj.ui.sliderW.setMaximum(SIobj.oriCvW)
         # 设置高度滑块最大/小值
-        SI.ui.sliderH.setMinimum(1)
-        SI.ui.sliderH.setMaximum(SI.oriCvH)
+        SIobj.ui.sliderH.setMinimum(1)
+        SIobj.ui.sliderH.setMaximum(SIobj.oriCvH)
         #设置步长
-        SI.ui.sliderW.setSingleStep(1)
-        SI.ui.sliderH.setSingleStep(1)
+        SIobj.ui.sliderW.setSingleStep(1)
+        SIobj.ui.sliderH.setSingleStep(1)
 
         #设置当前值
-        SI.ui.sliderW.setValue(SI.oriCvW)
-        SI.ui.sliderH.setValue(SI.oriCvH)
+        SIobj.ui.sliderW.setValue(SIobj.oriCvW)
+        SIobj.ui.sliderH.setValue(SIobj.oriCvH)
 
         #设置刻度的位置，刻度在下方
-        SI.ui.sliderW.setTickPosition(QSlider.TicksBelow)
-        SI.ui.sliderH.setTickPosition(QSlider.TicksBelow)
+        SIobj.ui.sliderW.setTickPosition(QSlider.TicksBelow)
+        SIobj.ui.sliderH.setTickPosition(QSlider.TicksBelow)
 
         #设置刻度的间隔
-        SI.ui.sliderW.setTickInterval(int(1 / 5*SI.oriCvW))
-        SI.ui.sliderH.setTickInterval(int(1 / 5 * SI.oriCvH))
+        SIobj.ui.sliderW.setTickInterval(int(1 / 5*SIobj.oriCvW))
+        SIobj.ui.sliderH.setTickInterval(int(1 / 5 * SIobj.oriCvH))
 
         #设置控件的信号处理函数
-        SI.ui.sliderW.valueChanged.connect(self.SliderChangeW)
-        SI.ui.sliderH.valueChanged.connect(self.SliderChangeH)
+        SIobj.ui.sliderW.valueChanged.connect(self.SliderChangeW)
+        SIobj.ui.sliderH.valueChanged.connect(self.SliderChangeH)
         
         #设置步长调节器的最大/小值
-        SI.ui.sBoxResizeW.setMaximum(SI.oriCvW)
-        SI.ui.sBoxResizeH.setMaximum(SI.oriCvH)
-        SI.ui.sBoxResizeW.setMinimum(1)
-        SI.ui.sBoxResizeH.setMinimum(1)
+        SIobj.ui.sBoxResizeW.setMaximum(SIobj.oriCvW)
+        SIobj.ui.sBoxResizeH.setMaximum(SIobj.oriCvH)
+        SIobj.ui.sBoxResizeW.setMinimum(1)
+        SIobj.ui.sBoxResizeH.setMinimum(1)
         
         #设置步长调节器
-        SI.ui.sBoxResizeW.setWrapping(True)
-        SI.ui.sBoxResizeH.setWrapping(True)
+        SIobj.ui.sBoxResizeW.setWrapping(True)
+        SIobj.ui.sBoxResizeH.setWrapping(True)
         
         #设置步长调节器的信号处理函数
-        SI.ui.sBoxResizeW.valueChanged.connect(self.CustomizeSizeW)
-        SI.ui.sBoxResizeH.valueChanged.connect(self.CustomizeSizeH)
+        SIobj.ui.sBoxResizeW.valueChanged.connect(self.CustomizeSizeW)
+        SIobj.ui.sBoxResizeH.valueChanged.connect(self.CustomizeSizeH)
 
         #设置步长调节器的初始值
-        SI.ui.sBoxResizeW.setValue(SI.oriCvW)
-        SI.ui.sBoxResizeH.setValue(SI.oriCvH)
+        SIobj.ui.sBoxResizeW.setValue(SIobj.oriCvW)
+        SIobj.ui.sBoxResizeH.setValue(SIobj.oriCvH)
 
 
         # #固定缩放比控件
-        # SI.ui.bGroupFixedRatio.buttonClicked.connect(self.changeFixedRatioRule)
+        # SIobj.ui.bGroupFixedRatio.buttonClicked.connect(self.changeFixedRatioRule)
 
 
     #resize的两个个重要全局影响选项
-    # 1- 是否选择了固定缩放比    SI.ui.cboxFixedRatio.isChecked()
+    # 1- 是否选择了固定缩放比    SIobj.ui.cboxFixedRatio.isChecked()
     # 2- 调节模式为百分比还是像素
 
 
     def ChangeSizeAndResize(self,dir):
-        if (SI.ui.cboxFixedRatio.isChecked()):
+        if (SIobj.ui.cboxFixedRatio.isChecked()):
             if(dir=="w"):
-                SI.showCvH = int(SI.showCvW / SI.oriCvW * SI.oriCvH)
+                SIobj.showCvH = int(SIobj.showCvW / SIobj.oriCvW * SIobj.oriCvH)
             elif(dir=="h"):
-                SI.showCvW = int(SI.showCvH / SI.oriCvH * SI.oriCvW)
+                SIobj.showCvW = int(SIobj.showCvH / SIobj.oriCvH * SIobj.oriCvW)
 
-        SI.showCvImg = cv2.resize(SI.cvImg, (SI.showCvW, SI.showCvH))
+        SIobj.showCvImg = cv2.resize(SIobj.cvImg, (SIobj.showCvW, SIobj.showCvH))
 
 
     def showImgInfoRefresh(self):
         #更新图片下端尺寸
-        SI.ui.labelShowImgInfo.setText("Size:%dx%d" %(SI.showCvW,SI.showCvH))
+        SIobj.ui.labelShowImgInfo.setText("Size:%dx%d" %(SIobj.showCvW,SIobj.showCvH))
         #更新滑动条下方的尺寸
-        SI.ui.labelSliderWInfo.setText(str(SI.showCvW))
-        SI.ui.labelSliderHInfo.setText(str(SI.showCvH))
+        SIobj.ui.labelSliderWInfo.setText(str(SIobj.showCvW))
+        SIobj.ui.labelSliderHInfo.setText(str(SIobj.showCvH))
 
         #下面的改动会调用这些控件的回调函数导致极大的性能浪费，最严重时，会触发python递归函数栈满溢出导致程序异常中止，（python最多递归1000层）
         #对所有的控件进行信号屏蔽
-        SI.ui.sBoxResizeW.blockSignals(True)
-        SI.ui.sBoxResizeH.blockSignals(True)
-        SI.ui.sliderW.blockSignals(True)
-        SI.ui.sliderH.blockSignals(True)
+        SIobj.ui.sBoxResizeW.blockSignals(True)
+        SIobj.ui.sBoxResizeH.blockSignals(True)
+        SIobj.ui.sliderW.blockSignals(True)
+        SIobj.ui.sliderH.blockSignals(True)
         #更新自定义数字筐的尺寸
-        SI.ui.sBoxResizeW.setValue(SI.showCvW)
-        SI.ui.sBoxResizeH.setValue(SI.showCvH)
+        SIobj.ui.sBoxResizeW.setValue(SIobj.showCvW)
+        SIobj.ui.sBoxResizeH.setValue(SIobj.showCvH)
         #请自行设置滑动条的数据
-        SI.ui.sliderW.setValue(SI.showCvW)
-        SI.ui.sliderH.setValue(SI.showCvH)
+        SIobj.ui.sliderW.setValue(SIobj.showCvW)
+        SIobj.ui.sliderH.setValue(SIobj.showCvH)
 
         #取消屏蔽
-        SI.ui.sBoxResizeW.blockSignals(False)
-        SI.ui.sBoxResizeH.blockSignals(False)
-        SI.ui.sliderW.blockSignals(False)
-        SI.ui.sliderH.blockSignals(False)
+        SIobj.ui.sBoxResizeW.blockSignals(False)
+        SIobj.ui.sBoxResizeH.blockSignals(False)
+        SIobj.ui.sliderW.blockSignals(False)
+        SIobj.ui.sliderH.blockSignals(False)
 
     '''
     这个函数是W滑动条的Trigger
     判断内容包括
-     1.是否固定缩放比  SI.ui.cboxFixedRatio.isChecked()
+     1.是否固定缩放比  SIobj.ui.cboxFixedRatio.isChecked()
        固定则要同时移动另一个滑动条
        
        
     会更改图片下端、自定义缩放比筐的尺寸
     '''
     def SliderChangeW(self):
-        SI.showCvW = SI.ui.sliderW.value()
-        #print(SI.showCvW/SI.oriCvW)
+        SIobj.showCvW = SIobj.ui.sliderW.value()
+        #print(SIobj.showCvW/SIobj.oriCvW)
         # 原方案  换算比例
-        # SI.showCvImg = self.resizeShowImg(SI.cvImg,0,0,fx=SI.showCvW/SI.oriCvW)
-        # SI.showCvH = SI.showCvImg.shape[0]
-        # SI.ui.sliderH.setValue(SI.showCvH)
+        # SIobj.showCvImg = self.resizeShowImg(SIobj.cvImg,0,0,fx=SIobj.showCvW/SIobj.oriCvW)
+        # SIobj.showCvH = SIobj.showCvImg.shape[0]
+        # SIobj.ui.sliderH.setValue(SIobj.showCvH)
 
         self.ChangeSizeAndResize("w")
 
-        SI.ShowPic(SI.showCvImg, SI.ui.labelShowImg)
+        SIobj.ShowPic(SIobj.showCvImg, SIobj.ui.labelShowImg)
         print("debug4")
         #更改图片信息尺寸
         self.showImgInfoRefresh()
         
 
     def SliderChangeH(self):
-        SI.showCvH = SI.ui.sliderH.value()
+        SIobj.showCvH = SIobj.ui.sliderH.value()
         self.ChangeSizeAndResize("h")
-        SI.ShowPic(SI.showCvImg, SI.ui.labelShowImg)
+        SIobj.ShowPic(SIobj.showCvImg, SIobj.ui.labelShowImg)
         print("debug3")
         # 更改图片信息尺寸
         self.showImgInfoRefresh()
@@ -251,24 +251,24 @@ class Resize:
     '''
     这个函数是W滑动条的Trigger
     判断内容包括
-        1.是否固定缩放比  SI.ui.cboxFixedRatio.isChecked()
+        1.是否固定缩放比  SIobj.ui.cboxFixedRatio.isChecked()
           固定则要设置另一个单位和
         2.单位是像素还是比例，按要求调节显示的单位
     '''
 
     def CustomizeSizeW(self):
-        SI.showCvW = SI.ui.sBoxResizeW.value()
+        SIobj.showCvW = SIobj.ui.sBoxResizeW.value()
         self.ChangeSizeAndResize("w")
-        SI.ShowPic(SI.showCvImg, SI.ui.labelShowImg)
-        print(SI.showCvW, SI.showCvH)
+        SIobj.ShowPic(SIobj.showCvImg, SIobj.ui.labelShowImg)
+        print(SIobj.showCvW, SIobj.showCvH)
         print("Debug")
         # 更改图片信息尺寸
         self.showImgInfoRefresh()
 
     def CustomizeSizeH(self):
-        SI.showCvH = SI.ui.sBoxResizeH.value()
+        SIobj.showCvH = SIobj.ui.sBoxResizeH.value()
         self.ChangeSizeAndResize("h")
-        SI.ShowPic(SI.showCvImg, SI.ui.labelShowImg)
+        SIobj.ShowPic(SIobj.showCvImg, SIobj.ui.labelShowImg)
         print("debug2")
         # 更改图片信息尺寸
         self.showImgInfoRefresh()
@@ -281,13 +281,13 @@ qfile_stats = QFile("ImgMargin.ui")
 qfile_stats.open(QFile.ReadOnly)
 qfile_stats.close()
 SIobj = SI()
-SI.ui = QUiLoader().load(qfile_stats)
-SI.InitImg(SI)
-SI.ShowPic(SI.showCvImg,SI.ui.labelShowImg)
+SIobj.ui = QUiLoader().load(qfile_stats)
+SIobj.InitImg()
+SIobj.ShowPic(SIobj.showCvImg,SIobj.ui.labelShowImg)
 
 
-SI.fileMenu = FIleMenu()
-SI.resize = Resize()
+SIobj.fileMenu = FIleMenu()
+SIobj.resize = Resize()
 
-SI.ui.show()
+SIobj.ui.show()
 app.exec_()

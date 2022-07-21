@@ -21,7 +21,7 @@ class SI:
         self.oriCvH = self.showCvH = self.cvImg.shape[0]
 
 
-    def ShowPic(cvImg, label):
+    def ShowPic(self,cvImg, label):
         cvImg = cv2.cvtColor(cvImg,cv2.COLOR_BGR2RGB)
         print(type(cvImg))
         showImg = QImage(cvImg.data, cvImg.shape[1], cvImg.shape[0],cvImg.shape[1]*3, QImage.Format_RGB888)
