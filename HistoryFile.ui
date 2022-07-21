@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>600</width>
+    <height>400</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,5">
+   <item>
+    <widget class="QListWidget" name="listHistoryFile"/>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout" stretch="9,1,0">
+     <item>
+      <widget class="QLabel" name="labelHistoryPreview">
+       <property name="text">
+        <string>图片在这里</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="labelPreviewInfo">
+       <property name="text">
+        <string>信息在这里</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnVerifyHistoryFile">
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

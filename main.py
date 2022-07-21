@@ -10,14 +10,25 @@ class FIleMenu:
     def __init__(self):
         SI.ui.fileOpenAction.triggered.connect(self.OpenFile)
         SI.ui.saveAsAction.triggered.connect(self.SaveFile)
+        SI.ui.cleanHistoryAction.triggered.connect(self.WrapOutHistory)
+        SI.historyFilePath = []
 
         #读取历史图片路径
         #txt中记录的图片地址从上到下为从新到旧
         with open ("./historyFile.txt",'r') as file:
             for path in file:
-                SI.historyFilePath.append(path)
+                SI.historyFilePath.append(path.strip())
 
-        #更新最近打开的图片路径
+        print(SI.historyFilePath)
+
+        #加载最近打开图片窗口
+        qfile_historyFile_stats = QFile("./HistoryFile.ui")
+        qfile_historyFile_stats.open(QFile.ReadOnly)
+        qfile_historyFile_stats.close()
+        SI.historyPathViewUi = QUiLoader().load(qfile_historyFile_stats)
+        SI.ui.recentFileAction.triggered.connect(self.ViewRecentFile)
+        SI.historyPathViewUi.listHistoryFile.itemClicked.connect(self.RecentFileShowCurrentItem)
+        SI.historyPathViewUi.btnVerifyHistoryFile.clicked.connect(self.VerifyHistoryFile)
 
 
 
@@ -35,7 +46,7 @@ class FIleMenu:
             "(*.png *.jpg *.bmp)"
         )
 
-        SI.cvImg = cv2.imread(filePath)
+        SI.cvImg = self.readFile(filePath)
         SI.showCvImg = SI.cvImg
         SI.ShowPic(SI.showCvImg,SI.ui.labelShowImg)
         SI.oriCvW = SI.showCvW = SI.cvImg.shape[1]
@@ -43,9 +54,17 @@ class FIleMenu:
         SI.resize = Resize()
         Resize.showImgInfoRefresh(Resize)
 
+        #历史记录最多存储10条，超过10条以队列的形式从队尾顶出
         if len(SI.historyFilePath) >= 10:
             SI.historyFilePath.pop()
         SI.historyFilePath.insert(0,filePath)
+        #每次更新状态后重新写最近打开历史记录文件
+        with open ("./historyFile.txt",'w') as file:
+            for path in SI.historyFilePath:
+                file.write(path+'\n')
+        print(SI.historyFilePath)
+
+
 
 
 
@@ -61,6 +80,42 @@ class FIleMenu:
     def SaveFile(self):
         filePath = QFileDialog.getExistingDirectory(SI.ui,"选择保存的路径")
         cv2.imwrite("TempName",SI.showCvImg)
+
+    def WrapOutHistory(self):
+        SI.historyFilePath = []
+        with open("./historyFile.txt",'w') as file:
+            file.write('')
+
+    def RenewListFileHistory(self):
+        SI.historyPathViewUi.listHistoryFile.clear()
+        for path in SI.historyFilePath:
+            SI.historyPathViewUi.listHistoryFile.addItem(path)
+
+    def ViewRecentFile(self):
+        self.RenewListFileHistory()
+        SI.historyPathViewUi.show()
+
+    def RecentFileShowCurrentItem(self):
+        path = SI.historyPathViewUi.listHistoryFile.currentItem().text()
+        imgCvPreview = self.readFile(path)
+        SI.ShowPic(imgCvPreview,SI.historyPathViewUi.labelHistoryPreview)
+
+        try:
+            channelsNum = imgCvPreview.shape[2]
+        except IndexError:
+            channelsNum = 2
+            imgType = "?"
+        else:
+            imgType = "RGB888"
+
+        SI.historyPathViewUi.labelPreviewInfo.setText(
+            "size: "+str(imgCvPreview.shape[1])+'x'+str(imgCvPreview.shape[0])+'\t'+
+            "channels: "+str(channelsNum)+'\t'+"type: "+imgType)
+
+    def VerifyHistoryFile(self):
+        SI.historyPathViewUi.hide()
+
+
 
 
 class EdgeDetection:
@@ -225,6 +280,7 @@ app = QApplication([])
 qfile_stats = QFile("ImgMargin.ui")
 qfile_stats.open(QFile.ReadOnly)
 qfile_stats.close()
+SIobj = SI()
 SI.ui = QUiLoader().load(qfile_stats)
 SI.InitImg(SI)
 SI.ShowPic(SI.showCvImg,SI.ui.labelShowImg)

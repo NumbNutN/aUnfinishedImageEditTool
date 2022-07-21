@@ -22,6 +22,9 @@ class SI:
 
 
     def ShowPic(cvImg, label):
+        cvImg = cv2.cvtColor(cvImg,cv2.COLOR_BGR2RGB)
+        print(type(cvImg))
         showImg = QImage(cvImg.data, cvImg.shape[1], cvImg.shape[0],cvImg.shape[1]*3, QImage.Format_RGB888)
+
         #   5.在PYQT5显示，需要转化为QPixmap格式
         label.setPixmap(QPixmap.fromImage(showImg))
