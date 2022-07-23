@@ -47,9 +47,8 @@ class FIleMenu:
         )
 
         SIobj.cvImg = self.readFile(filePath)
-        SIobj.showCvImg.insert(0,SIobj.cvImg)
-        SIobj.showCvImg.insert(0, SIobj.cvImg)
-        SIobj.ShowPic(SIobj.showCvImg[0],SIobj.ui.labelShowImg)
+        SIobj.showCvImg.insert(0,self.cvImg)
+        SIobj.ShowPic(SIobj.showCvImg,SIobj.ui.labelShowImg)
         SIobj.oriCvW = SIobj.showCvW = SIobj.cvImg.shape[1]
         SIobj.oriCvH = SIobj.showCvH = SIobj.cvImg.shape[0]
         SIobj.resize = Resize()
@@ -129,11 +128,8 @@ class TabWidget:
     def TabChange(self):
         print(SIobj.ui.tabWidgetFunction.currentIndex())
         if not(np.array_equal(SIobj.showCvImg[0],SIobj.showCvImg[1])):
-            SIobj.showCvImg.insert(0,SIobj.showCvImg[0])
-        print("Image Edit Stack: "+str(len(SIobj.showCvImg)))
-        SIobj.ShowPic(SIobj.showCvImg[0],SIobj.ui.labelShowImg)
-        SIobj.advancedinfo.InfoRefresh()
-
+            SIobj.showCvImg.insert(SIobj.showCvImg,0)
+        print(len(SIobj.showCvImg))
 
 class Resize:
     def __init__(self):
@@ -288,25 +284,11 @@ class Resize:
 
 class GrayScale:
     def __init__(self):
-        SIobj.ui.cboxCvtToGrayScale.stateChanged.connect(self.TranToGrayScal)
-
-    def TranToGrayScal(self):
-        if (SIobj.ui.cboxCvtToGrayScale.isChecked()):
-            SIobj.showCvImg[0] = cv2.cvtColor(SIobj.showCvImg[1],cv2.COLOR_BGR2GRAY)
-            SIobj.ShowPic(SIobj.showCvImg[0],SIobj.ui.labelShowImg)
-            print("ConvertToGrayScale")
-        else:
-            SIobj.showCvImg[0] = SIobj.showCvImg[1]
-            SIobj.ShowPic(SIobj.showCvImg[0], SIobj.ui.labelShowImg)
-            print("ReturnToColor")
-
-
-class AdvancedInfo:
-    def __init__(self):
         pass
 
-    def InfoRefresh(self):
-        SIobj.ui.labelQueueNum.setText("图片处理历史队列数： "+str(len(SIobj.showCvImg)))
+    def TranToGrayScal(self):
+        SIobj.showCvImg[0] = cv2.cvtColor(SIobj.showCvImg[1],cv2.COLOR_BGR2GRAY)
+
 
 app = QApplication([])
 
@@ -322,8 +304,6 @@ SIobj.ShowPic(SIobj.showCvImg[0],SIobj.ui.labelShowImg)
 SIobj.fileMenu = FIleMenu()
 SIobj.resize = Resize()
 SIobj.tabwidget = TabWidget()
-SIobj.advancedinfo = AdvancedInfo()
-SIobj.grayscale = GrayScale()
 
 SIobj.ui.show()
 app.exec_()

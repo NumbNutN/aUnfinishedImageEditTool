@@ -7,7 +7,7 @@ import cv2
 class SI:
     def __init__(self):
         self.cvImg = None
-        self.showCvImg = None
+        self.showCvImg = []
         self.oriCvW = 0
         self.oriCvH = 0
         self.showCvW = None
@@ -16,7 +16,9 @@ class SI:
         self.historyFilePath = []
 
     def InitImg(self):
-        self.cvImg = self.showCvImg = cv2.imread("./InitImg.png")
+        self.cvImg = cv2.imread("./InitImg.png")
+        self.showCvImg.insert(0,self.cvImg)
+        self.showCvImg.insert(0, self.cvImg)
         self.oriCvW = self.showCvW = self.cvImg.shape[1]
         self.oriCvH = self.showCvH = self.cvImg.shape[0]
 
