@@ -124,12 +124,12 @@ class EdgeDetection:
 
     tempSobelImg = None
     tempFlipImg = None
-
+    temp2 = None
     def __init__(self):
         SI.ui.cBoxCvtMargin.stateChanged.connect(self.FindEdge)
         SI.ui.bGroupMarginBackground.buttonClicked.connect(self.PositiveAndNegativeChange)
         #默认正面
-        SI.ui.radioButtonPositive.setChecked(True)
+        #SI.ui.radioButtonPositive.setDown(True)
 
         # 设置宽度滑块最大/小值
         SI.ui.sliderMarginAdjustStrength.setMinimum(0)
@@ -156,8 +156,25 @@ class EdgeDetection:
             sobelx = cv2.Sobel(SI.showCvImg[0], -1, 1, 0, ksize=3)
             sobely = cv2.Sobel(SI.showCvImg[0], -1, 0, 1, ksize=3)
             self.tempSobelImg = cv2.addWeighted(sobelx, 0.5, sobely, 0.5, 0)
-            self.tempFlipImg = self.FlipImg(self.tempSobelImg)
+            cv2.imshow("window", self.tempSobelImg)
+            cv2.waitKey(0)
             SI.showCvImg[0] = self.tempSobelImg
+            self.temp2 = self.tempSobelImg
+            print(np.array_equal(self.tempSobelImg,self.temp2))
+            cv2.imshow("window", self.tempSobelImg)
+            cv2.waitKey(0)
+            self.tempFlipImg = self.FlipImg(self.tempSobelImg)
+            cv2.imshow("window", self.tempSobelImg)
+            cv2.waitKey(0)
+            print(np.array_equal(self.tempSobelImg,self.tempFlipImg))
+            cv2.imshow("window", self.tempSobelImg)
+            cv2.waitKey(0)
+            cv2.imshow("window", self.tempFlipImg)
+            cv2.waitKey(0)
+
+            cv2.destroyAllWindows()
+
+
         else:
             SI.showCvImg[0] = SI.showCvImg[1]
         SI.ShowPic(SI.showCvImg[0], SI.ui.labelShowImg)

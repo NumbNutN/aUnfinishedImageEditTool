@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_12">
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout_9" stretch="1,5,1,1">
+     <layout class="QVBoxLayout" name="verticalLayout_9" stretch="0,5,1,1">
       <item>
        <widget class="QTabWidget" name="tabWidgetFunction">
         <property name="sizePolicy">
@@ -26,7 +26,7 @@
          </sizepolicy>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tabGrayscale">
          <attribute name="title">
@@ -59,22 +59,51 @@
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_11">
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_7">
+           <layout class="QHBoxLayout" name="horizontalLayout_8">
             <item>
-             <widget class="QCheckBox" name="checkBox_9">
+             <widget class="QCheckBox" name="cBoxCvtMargin">
               <property name="text">
                <string>勾画边缘（这会把图片转化为灰度图）</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QSlider" name="horizontalSlider_14">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+             <widget class="QGroupBox" name="groupBox">
+              <property name="title">
+               <string>底色</string>
               </property>
+              <layout class="QVBoxLayout" name="verticalLayout_7">
+               <item>
+                <widget class="QRadioButton" name="radioButtonPositive">
+                 <property name="text">
+                  <string>正向</string>
+                 </property>
+                 <attribute name="buttonGroup">
+                  <string notr="true">bGroupMarginBackground</string>
+                 </attribute>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioButtonNagetive">
+                 <property name="text">
+                  <string>反向</string>
+                 </property>
+                 <attribute name="buttonGroup">
+                  <string notr="true">bGroupMarginBackground</string>
+                 </attribute>
+                </widget>
+               </item>
+              </layout>
              </widget>
             </item>
            </layout>
+          </item>
+          <item>
+           <widget class="QSlider" name="sliderMarginAdjustStrength">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -546,5 +575,6 @@
  <connections/>
  <buttongroups>
   <buttongroup name="bGroupRatioOrNot"/>
+  <buttongroup name="bGroupMarginBackground"/>
  </buttongroups>
 </ui>

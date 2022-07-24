@@ -5,6 +5,18 @@ from PySide2.QtGui import QPixmap ,QImage
 import cv2
 
 class SI:
+
+    cvImg = None
+    showCvImg = []
+    oriCvW = 0
+    oriCvH = 0
+    showCvW = None
+    showCvH = None
+    historyFilePath = []
+
+
+
+
     def __init__(self):
         self.cvImg = None
         self.showCvImg = []
@@ -23,10 +35,15 @@ class SI:
         self.oriCvH = self.showCvH = self.cvImg.shape[0]
 
 
-    def ShowPic(self,cvImg, label):
+    def ShowPic(cvImg, label):
         cvImg = cv2.cvtColor(cvImg,cv2.COLOR_BGR2RGB)
         print(type(cvImg))
         showImg = QImage(cvImg.data, cvImg.shape[1], cvImg.shape[0],cvImg.shape[1]*3, QImage.Format_RGB888)
 
         #   5.在PYQT5显示，需要转化为QPixmap格式
+        label.setPixmap(QPixmap.fromImage(showImg))
+
+    def ShowGrayPic(cvImg, label):
+        print(cvImg.shape)
+        showImg = QImage(cvImg.data, cvImg.shape[1], cvImg.shape[0], cvImg.shape[1] * 3, QImage.Format_BGR888)
         label.setPixmap(QPixmap.fromImage(showImg))
