@@ -57,13 +57,47 @@
          <attribute name="title">
           <string>描边</string>
          </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_11">
+         <layout class="QVBoxLayout" name="verticalLayout_17">
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_8">
+           <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="9,1,2">
             <item>
-             <widget class="QCheckBox" name="cBoxCvtMargin">
-              <property name="text">
-               <string>勾画边缘（这会把图片转化为灰度图）</string>
+             <layout class="QVBoxLayout" name="verticalLayout_16">
+              <item>
+               <widget class="QCheckBox" name="cBoxCvtMargin">
+                <property name="text">
+                 <string>勾画边缘</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="groupBox_2">
+                <property name="title">
+                 <string>选项</string>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_11">
+                 <item>
+                  <widget class="QRadioButton" name="radioButton_3">
+                   <property name="text">
+                    <string>不转化为灰度勾画（强烈不推荐，24位图）</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QRadioButton" name="radioButton_4">
+                   <property name="text">
+                    <string>转化为灰度图后勾画（动态调整滑动条可用，8位图）</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="Line" name="line_2">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
               </property>
              </widget>
             </item>
@@ -99,11 +133,22 @@
            </layout>
           </item>
           <item>
-           <widget class="QSlider" name="sliderMarginAdjustStrength">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout" name="horizontalLayout_9">
+            <item>
+             <widget class="QSlider" name="sliderMarginAdjustStrength">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelEdgeStrength">
+              <property name="text">
+               <string>TextLabel</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
@@ -574,7 +619,7 @@
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="bGroupRatioOrNot"/>
   <buttongroup name="bGroupMarginBackground"/>
+  <buttongroup name="bGroupRatioOrNot"/>
  </buttongroups>
 </ui>

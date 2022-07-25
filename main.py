@@ -81,7 +81,9 @@ class FIleMenu:
 
     def SaveFile(self):
         filePath = QFileDialog.getExistingDirectory(SI.ui,"选择保存的路径")
-        cv2.imwrite("TempName.jpg",SI.showCvImg[0])
+        print(filePath+"/TempName.jpg")
+
+        cv2.imwrite(filePath+"/TempName.jpg",SI.showCvImg[0])
 
     def WrapOutHistory(self):
         SI.historyFilePath = []
@@ -139,7 +141,8 @@ class EdgeDetection:
         SI.ui.sliderMarginAdjustStrength.setSingleStep(1)
 
         # 设置当前值
-        SI.ui.sliderMarginAdjustStrength.setValue(255)
+        SI.ui.sliderMarginAdjustStrength.setValue(127)
+        SI.ui.labelEdgeStrength.setText(str(SI.ui.sliderMarginAdjustStrength.value()))
 
         # 设置刻度的位置，刻度在下方
         SI.ui.sliderMarginAdjustStrength.setTickPosition(QSlider.TicksBelow)
@@ -153,14 +156,20 @@ class EdgeDetection:
 
     def FindEdge(self):
         if (SI.ui.cBoxCvtMargin.isChecked()):
-            sobelx = cv2.Sobel(SI.showCvImg[0], -1, 1, 0, ksize=3)
-            sobely = cv2.Sobel(SI.showCvImg[0], -1, 0, 1, ksize=3)
+            grayImg = cv2.cvtColor(SI.showCvImg[0],cv2.COLOR_BGR2GRAY)
+            sobelx = cv2.Sobel(grayImg, -1, 1, 0, ksize=3)
+            sobely = cv2.Sobel(grayImg, -1, 0, 1, ksize=3)
             self.tempSobelImg = cv2.addWeighted(sobelx, 0.5, sobely, 0.5, 0)
             self.tempFlipImg = self.FlipImg(self.tempSobelImg)
-            SI.showCvImg[0] = self.tempSobelImg
+            self.PositiveAndNegativeChange()
+            #SI.showCvImg[0] = self.tempSobelImg
+            #SI.ShowGrayPic(SI.showCvImg[0], SI.ui.labelShowImg)
         else:
             SI.showCvImg[0] = SI.showCvImg[1]
-        SI.ShowPic(SI.showCvImg[0], SI.ui.labelShowImg)
+            SI.ShowPic(SI.showCvImg[0], SI.ui.labelShowImg)
+        SI.PrintSimpleImgInfo(SI.showCvImg[0], SI.ui.labelShowImgInfo)
+
+        print(SI.showCvImg[0].shape)
 
         # cv2.imshow("window", SI.showCvImg[0])
         # cv2.waitKey(0)
@@ -168,7 +177,15 @@ class EdgeDetection:
         # SI.ShowGrayPic(SI.showCvImg[0], SI.ui.labelShowImg)
 
     def AdjustStrength(self):
-        pass
+        if (SI.ui.radioButtonNagetive.isChecked()):
+            #SI.showCvImg[0] = cv2.inRange(self.tempFlipImg,255 - SI.ui.sliderMarginAdjustStrength.value(),256)
+            SI.showCvImg[0] = cv2.inRange(self.tempSobelImg,0, SI.ui.sliderMarginAdjustStrength.value())
+
+        else:
+            SI.showCvImg[0] = cv2.inRange(self.tempSobelImg, 255 - SI.ui.sliderMarginAdjustStrength.value(), 255)
+
+        SI.ShowPic(SI.showCvImg[0], SI.ui.labelShowImg)
+        SI.ui.labelEdgeStrength.setText(str(SI.ui.sliderMarginAdjustStrength.value()))
 
     def FlipImg(self,img):
         newImg = np.copy(img)
@@ -183,18 +200,16 @@ class EdgeDetection:
         return newImg
 
     def PositiveAndNegativeChange(self):
-        print(SI.ui.radioButtonPositive.isChecked())
-        if(SI.ui.radioButtonPositive.isChecked()):
-            SI.showCvImg[0] = self.tempSobelImg
-            print("positive")
-        else:
-            SI.showCvImg[0] = self.tempFlipImg
-            print("negative")
-        SI.ShowGrayPic(SI.showCvImg[0], SI.ui.labelShowImg)
-        print(np.array_equal(self.tempSobelImg,self.tempFlipImg))
+        if(SI.ui.cBoxCvtMargin.isChecked()):
 
-
-
+            if(SI.ui.radioButtonPositive.isChecked()):
+                SI.showCvImg[0] = self.tempSobelImg
+                print("positive")
+            else:
+                SI.showCvImg[0] = self.tempFlipImg
+                SI.print_img_txt(SI.showCvImg[0])
+                print("negative")
+            SI.ShowGrayPic(SI.showCvImg[0], SI.ui.labelShowImg)
 
 
 
@@ -211,8 +226,6 @@ class TabWidget:
         print("Image Edit Stack: "+str(len(SI.showCvImg)))
         SI.ShowPic(SI.showCvImg[0],SI.ui.labelShowImg)
         SI.advancedinfo.InfoRefresh()
-
-
 
 
 class GrayScale:

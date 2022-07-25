@@ -70,7 +70,8 @@ class Resize:
 
     def showImgInfoRefresh(self):
         # 更新图片下端尺寸
-        SI.ui.labelShowImgInfo.setText("Size:%dx%d" % (SI.showCvW, SI.showCvH))
+        SI.PrintSimpleImgInfo(SI.showCvImg[0],SI.ui.labelShowImgInfo)
+        #SI.ui.labelShowImgInfo.setText("Size:%dx%d" % (SI.showCvW, SI.showCvH))
         # 更新滑动条下方的尺寸
         SI.ui.labelSliderWInfo.setText(str(SI.showCvW))
         SI.ui.labelSliderHInfo.setText(str(SI.showCvH))
