@@ -52,6 +52,9 @@ class Resize:
         SI.ui.sBoxResizeW.setValue(SI.oriCvW)
         SI.ui.sBoxResizeH.setValue(SI.oriCvH)
 
+        #默认像素缩放模式
+        SI.ui.rbtnResizePixel.setChecked(True)
+
         # #固定缩放比控件
         # SI.ui.bGroupFixedRatio.buttonClicked.connect(self.changeFixedRatioRule)
 

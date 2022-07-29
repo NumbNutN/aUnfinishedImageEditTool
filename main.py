@@ -6,10 +6,16 @@ from PySide2.QtGui import QPixmap ,QImage
 import cv2
 from lib.share import SI
 from lib.resize import Resize
+from lib.transparent import Transparent
+from lib.processingQueue import ProcessingQueue
 
 class FIleMenu:
+
+    OPENFILEFROMCUSTOMIZEPATH = 100    #调出资源管理器的路径选择供用户挑选
+    OPENFILEFROMEXISTPATH = 101        #从系统记录的已有路径调取
+    OPENFILEFROMMEMORY = 102           #从内存中存在的图片调取
     def __init__(self):
-        SI.ui.fileOpenAction.triggered.connect(self.OpenFile)
+        SI.ui.fileOpenAction.triggered.connect(lambda: self.OpenFile(self.OPENFILEFROMCUSTOMIZEPATH))
         SI.ui.saveAsAction.triggered.connect(self.SaveFile)
         SI.ui.cleanHistoryAction.triggered.connect(self.WrapOutHistory)
         SI.historyFilePath = []
@@ -29,9 +35,7 @@ class FIleMenu:
         SI.historyPathViewUi = QUiLoader().load(qfile_historyFile_stats)
         SI.ui.recentFileAction.triggered.connect(self.ViewRecentFile)
         SI.historyPathViewUi.listHistoryFile.itemClicked.connect(self.RecentFileShowCurrentItem)
-        SI.historyPathViewUi.btnVerifyHistoryFile.clicked.connect(self.VerifyHistoryFile)
-
-
+        SI.historyPathViewUi.btnVerifyHistoryFile.clicked.connect(self.SelectAnHistoryFile)
 
     #兼容中文的读取方案
     def readFile(self,filePath):
@@ -39,15 +43,26 @@ class FIleMenu:
         img = cv2.imdecode(raw_data,cv2.IMREAD_COLOR)
         return img
 
-    def OpenFile(self):
-        filePath,fileType = QFileDialog.getOpenFileName(
-            SI.ui,
-            "选择图片路径",
-            r"d:",
-            "(*.png *.jpg *.bmp)"
-        )
+    def OpenFile(self,openType,filePath = None,img = None):
 
-        SI.cvImg = self.readFile(filePath)
+        if (openType == self.OPENFILEFROMCUSTOMIZEPATH):
+            filePath,fileType = QFileDialog.getOpenFileName(
+                SI.ui,
+                "选择图片路径",
+                r"d:",
+                "(*.png *.jpg *.bmp)"
+            )
+            SI.cvImg = self.readFile(filePath)
+            print("Open a file from customaize path")
+
+        elif (openType == self.OPENFILEFROMEXISTPATH):
+            SI.cvImg = self.readFile(filePath)
+            print("Open a file from existing path")
+
+        elif (openType == self.OPENFILEFROMMEMORY):
+            SI.cvImg = img
+            print("Open a file from memory")
+
         SI.showCvImg.insert(0,SI.cvImg)
         SI.showCvImg.insert(0, SI.cvImg)
         SI.ShowPic(SI.showCvImg[0],SI.ui.labelShowImg)
@@ -60,10 +75,12 @@ class FIleMenu:
         if len(SI.historyFilePath) >= 10:
             SI.historyFilePath.pop()
         SI.historyFilePath.insert(0,filePath)
+
         #每次更新状态后重新写最近打开历史记录文件
         with open ("./historyFile.txt",'w') as file:
-            for path in SI.historyFilePath:
-                file.write(path+'\n')
+                for path in SI.historyFilePath:
+                    if path is not None:
+                        file.write(path+'\n')
         print(SI.historyFilePath)
 
 
@@ -116,7 +133,9 @@ class FIleMenu:
             "size: "+str(imgCvPreview.shape[1])+'x'+str(imgCvPreview.shape[0])+'\t'+
             "channels: "+str(channelsNum)+'\t'+"type: "+imgType)
 
-    def VerifyHistoryFile(self):
+    def SelectAnHistoryFile(self):
+        path = SI.historyPathViewUi.listHistoryFile.currentItem().text()
+        self.OpenFile(self.OPENFILEFROMEXISTPATH,filePath=path)
         SI.historyPathViewUi.hide()
 
 
@@ -235,12 +254,13 @@ class GrayScale:
     def TranToGrayScal(self):
         if (SI.ui.cboxCvtToGrayScale.isChecked()):
             SI.showCvImg[0] = cv2.cvtColor(SI.showCvImg[1],cv2.COLOR_BGR2GRAY)
-            SI.ShowPic(SI.showCvImg[0],SI.ui.labelShowImg)
+            SI.ShowGrayPic(SI.showCvImg[0],SI.ui.labelShowImg)
             print("ConvertToGrayScale")
         else:
             SI.showCvImg[0] = SI.showCvImg[1]
             SI.ShowPic(SI.showCvImg[0], SI.ui.labelShowImg)
             print("ReturnToColor")
+        SI.PrintSimpleImgInfo(SI.showCvImg[0], SI.ui.labelShowImgInfo)
 
 
 class AdvancedInfo:
@@ -266,6 +286,8 @@ SI.tabwidget = TabWidget()
 SI.advancedinfo = AdvancedInfo()
 SI.grayscale = GrayScale()
 SI.edgedetection = EdgeDetection()
+SI.transparent = Transparent()
+SI.processingqueue = ProcessingQueue()
 
 SI.ui.show()
 app.exec_()

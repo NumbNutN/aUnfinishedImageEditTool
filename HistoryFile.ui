@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>400</height>
+    <width>800</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>最近打开</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,5">
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,5">
    <item>
     <widget class="QListWidget" name="listHistoryFile"/>
    </item>
@@ -36,7 +36,7 @@
      <item>
       <widget class="QPushButton" name="btnVerifyHistoryFile">
        <property name="text">
-        <string>PushButton</string>
+        <string>确定</string>
        </property>
       </widget>
      </item>

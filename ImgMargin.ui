@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>588</width>
+    <width>616</width>
     <height>449</height>
    </rect>
   </property>
@@ -26,7 +26,7 @@
          </sizepolicy>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>3</number>
         </property>
         <widget class="QWidget" name="tabGrayscale">
          <attribute name="title">
@@ -39,13 +39,6 @@
              <widget class="QCheckBox" name="cboxCvtToGrayScale">
               <property name="text">
                <string>转化为灰度图</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSlider" name="horizontalSlider_4">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
               </property>
              </widget>
             </item>
@@ -247,7 +240,7 @@
              <item>
               <layout class="QVBoxLayout" name="verticalLayout_14">
                <item>
-                <widget class="QRadioButton" name="radioButton">
+                <widget class="QRadioButton" name="rbtnResizePixel">
                  <property name="text">
                   <string>像素</string>
                  </property>
@@ -257,7 +250,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QRadioButton" name="radioButton_2">
+                <widget class="QRadioButton" name="rbtnResizePresentage">
                  <property name="text">
                   <string>百分比</string>
                  </property>
@@ -316,31 +309,96 @@
          <attribute name="title">
           <string>透明色</string>
          </attribute>
-         <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <layout class="QHBoxLayout" name="horizontalLayout_16" stretch="10,1,20">
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <layout class="QVBoxLayout" name="verticalLayout_19">
             <item>
-             <layout class="QVBoxLayout" name="verticalLayout">
+             <widget class="QLabel" name="label_11">
+              <property name="text">
+               <string>将像素值在以下域中设为透明色</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
               <item>
-               <widget class="QCheckBox" name="checkBox_4">
+               <widget class="QCheckBox" name="cBoxLight">
                 <property name="text">
-                 <string>深色</string>
+                 <string>亮&gt;</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QCheckBox" name="checkBox_5">
+               <widget class="QLabel" name="labelLightSample">
+                <property name="minimumSize">
+                 <size>
+                  <width>25</width>
+                  <height>25</height>
+                 </size>
+                </property>
                 <property name="text">
-                 <string>浅色</string>
+                 <string>颜色</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSlider" name="sliderLight">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="labelLightValue">
+                <property name="text">
+                 <string>value</string>
                 </property>
                </widget>
               </item>
              </layout>
             </item>
             <item>
-             <widget class="QSlider" name="horizontalSlider_13">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <item>
+               <widget class="QCheckBox" name="cBoxDark">
+                <property name="text">
+                 <string>暗&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="labelDarkSample">
+                <property name="minimumSize">
+                 <size>
+                  <width>25</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>颜色</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSlider" name="sliderDark">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="labelDarkValue">
+                <property name="text">
+                 <string>value</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_9">
+              <property name="text">
+               <string>代码设计能力有限，请用拖动替代跳动</string>
               </property>
              </widget>
             </item>
@@ -354,7 +412,7 @@
            </widget>
           </item>
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_5" stretch="1,5">
+           <layout class="QVBoxLayout" name="verticalLayout_18" stretch="1,9">
             <item>
              <widget class="QLabel" name="label_2">
               <property name="text">
@@ -363,7 +421,7 @@
              </widget>
             </item>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <layout class="QHBoxLayout" name="horizontalLayout_15" stretch="1,2,5,2,5">
               <item>
                <layout class="QVBoxLayout" name="verticalLayout_2">
                 <item>
@@ -390,66 +448,244 @@
                </layout>
               </item>
               <item>
-               <widget class="QCheckBox" name="checkBox_6">
-                <property name="text">
-                 <string>高于</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <layout class="QVBoxLayout" name="verticalLayout_3">
+               <layout class="QVBoxLayout" name="verticalLayout" stretch="2,5">
                 <item>
-                 <widget class="QSlider" name="horizontalSlider_15">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
+                 <widget class="QCheckBox" name="cBoxColorHigh">
+                  <property name="text">
+                   <string>高于</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QSlider" name="horizontalSlider_16">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
+                 <widget class="QLabel" name="labelCHighSample">
+                  <property name="minimumSize">
+                   <size>
+                    <width>50</width>
+                    <height>50</height>
+                   </size>
                   </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QSlider" name="horizontalSlider_17">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
+                  <property name="text">
+                   <string>颜色</string>
                   </property>
                  </widget>
                 </item>
                </layout>
               </item>
               <item>
-               <widget class="QCheckBox" name="checkBox_7">
-                <property name="text">
-                 <string>低于</string>
-                </property>
-               </widget>
-              </item>
-              <item>
                <layout class="QVBoxLayout" name="verticalLayout_4">
                 <item>
-                 <widget class="QSlider" name="horizontalSlider_18">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
+                 <layout class="QHBoxLayout" name="horizontalLayout_4">
+                  <item>
+                   <widget class="QLabel" name="labelRHighSample">
+                    <property name="minimumSize">
+                     <size>
+                      <width>25</width>
+                      <height>25</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QSlider" name="sliderRHigh">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="labelRHighValue">
+                    <property name="text">
+                     <string>value</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_10">
+                  <item>
+                   <widget class="QLabel" name="labelGHighSample">
+                    <property name="minimumSize">
+                     <size>
+                      <width>25</width>
+                      <height>25</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QSlider" name="sliderGHigh">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="labelGHighValue">
+                    <property name="text">
+                     <string>value</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_11">
+                  <item>
+                   <widget class="QLabel" name="labelBHighSample">
+                    <property name="minimumSize">
+                     <size>
+                      <width>25</width>
+                      <height>25</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QSlider" name="sliderBHigh">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="labelBHighValue">
+                    <property name="text">
+                     <string>value</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_3" stretch="2,5">
+                <item>
+                 <widget class="QCheckBox" name="cBoxColorLow">
+                  <property name="text">
+                   <string>低于</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QSlider" name="horizontalSlider_19">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
+                 <widget class="QLabel" name="labelCLowSample">
+                  <property name="minimumSize">
+                   <size>
+                    <width>50</width>
+                    <height>50</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>颜色</string>
                   </property>
                  </widget>
                 </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_5">
                 <item>
-                 <widget class="QSlider" name="horizontalSlider_20">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                 </widget>
+                 <layout class="QHBoxLayout" name="horizontalLayout_12">
+                  <item>
+                   <widget class="QLabel" name="labelRLowSample">
+                    <property name="minimumSize">
+                     <size>
+                      <width>25</width>
+                      <height>25</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QSlider" name="sliderRLow">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="labelRLowValue">
+                    <property name="text">
+                     <string>value</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_13">
+                  <item>
+                   <widget class="QLabel" name="labelGLowSample">
+                    <property name="minimumSize">
+                     <size>
+                      <width>25</width>
+                      <height>25</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QSlider" name="sliderGLow">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="labelGLowValue">
+                    <property name="text">
+                     <string>value</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_14">
+                  <item>
+                   <widget class="QLabel" name="labelBLowSample">
+                    <property name="minimumSize">
+                     <size>
+                      <width>25</width>
+                      <height>25</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QSlider" name="sliderBLow">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="labelBLowValue">
+                    <property name="text">
+                     <string>value</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </item>
                </layout>
               </item>
@@ -521,7 +757,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>588</width>
+     <width>616</width>
      <height>22</height>
     </rect>
    </property>
@@ -538,7 +774,8 @@
     <property name="title">
      <string>编辑</string>
     </property>
-    <addaction name="action_2"/>
+    <addaction name="actionBack"/>
+    <addaction name="actionViewProcessingQueue"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
@@ -580,7 +817,7 @@
     <string>最近打开</string>
    </property>
   </action>
-  <action name="action_2">
+  <action name="actionBack">
    <property name="text">
     <string>回退上一步</string>
    </property>
@@ -615,11 +852,16 @@
     <string>清除历史打开记录</string>
    </property>
   </action>
+  <action name="actionViewProcessingQueue">
+   <property name="text">
+    <string>查阅操作队列</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="bGroupMarginBackground"/>
   <buttongroup name="bGroupRatioOrNot"/>
+  <buttongroup name="bGroupMarginBackground"/>
  </buttongroups>
 </ui>
