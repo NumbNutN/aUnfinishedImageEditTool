@@ -1,14 +1,15 @@
 from PySide2.QtWidgets import QApplication ,QMessageBox ,QTableWidgetItem ,QFileDialog ,QLabel ,QSlider
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtCore import *
-from PySide2.QtGui import QPixmap ,QImage, QIcon
+from PySide2.QtGui import QPixmap ,QImage, QIcon, QMouseEvent
 import cv2
 import numpy as np
+
 
 class SI:
 
     cvImg = None
-    showCvImg = []
+    processingImgQueue = []
     oriCvW = 0
     oriCvH = 0
     showCvW = None
@@ -29,7 +30,7 @@ class SI:
 
     def __init__(self):
         self.cvImg = None
-        self.showCvImg = []
+        self.processingImgQueue = []
         self.oriCvW = 0
         self.oriCvH = 0
         self.showCvW = None
@@ -43,8 +44,8 @@ class SI:
 
     def InitImg(self):
         self.cvImg = cv2.imread("./InitImg.png")
-        self.showCvImg.insert(0,self.cvImg)
-        self.showCvImg.insert(0, self.cvImg)
+        self.processingImgQueue.insert(0,self.cvImg)
+        self.processingImgQueue.insert(0, self.cvImg)
         self.oriCvW = self.showCvW = self.cvImg.shape[1]
         self.oriCvH = self.showCvH = self.cvImg.shape[0]
 

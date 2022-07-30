@@ -69,11 +69,11 @@ class Resize:
             elif (dir == "h"):
                 SI.showCvW = int(SI.showCvH / SI.oriCvH * SI.oriCvW)
 
-        SI.showCvImg[0] = cv2.resize(SI.showCvImg[1], (SI.showCvW, SI.showCvH))
+        SI.processingImgQueue[0] = cv2.resize(SI.processingImgQueue[1], (SI.showCvW, SI.showCvH))
 
     def showImgInfoRefresh(self):
         # 更新图片下端尺寸
-        SI.PrintSimpleImgInfo(SI.showCvImg[0],SI.ui.labelShowImgInfo)
+        SI.PrintSimpleImgInfo(SI.processingImgQueue[0],SI.ui.labelShowImgInfo)
         #SI.ui.labelShowImgInfo.setText("Size:%dx%d" % (SI.showCvW, SI.showCvH))
         # 更新滑动条下方的尺寸
         SI.ui.labelSliderWInfo.setText(str(SI.showCvW))
@@ -112,13 +112,13 @@ class Resize:
         SI.showCvW = SI.ui.sliderW.value()
         # print(SI.showCvW/SI.oriCvW)
         # 原方案  换算比例
-        # SI.showCvImg = self.resizeShowImg(SI.cvImg,0,0,fx=SI.showCvW/SI.oriCvW)
-        # SI.showCvH = SI.showCvImg.shape[0]
+        # SI.processingImgQueue = self.resizeShowImg(SI.cvImg,0,0,fx=SI.showCvW/SI.oriCvW)
+        # SI.showCvH = SI.processingImgQueue.shape[0]
         # SI.ui.sliderH.setValue(SI.showCvH)
 
         self.ChangeSizeAndResize("w")
 
-        SI.ShowPic(SI.showCvImg[0], SI.ui.labelShowImg)
+        SI.ShowPic(SI.processingImgQueue[0], SI.ui.labelShowImg)
         print("debug4")
         # 更改图片信息尺寸
         self.showImgInfoRefresh()
@@ -126,7 +126,7 @@ class Resize:
     def SliderChangeH(self):
         SI.showCvH = SI.ui.sliderH.value()
         self.ChangeSizeAndResize("h")
-        SI.ShowPic(SI.showCvImg[0], SI.ui.labelShowImg)
+        SI.ShowPic(SI.processingImgQueue[0], SI.ui.labelShowImg)
         print("debug3")
         # 更改图片信息尺寸
         self.showImgInfoRefresh()
@@ -142,7 +142,7 @@ class Resize:
     def CustomizeSizeW(self):
         SI.showCvW = SI.ui.sBoxResizeW.value()
         self.ChangeSizeAndResize("w")
-        SI.ShowPic(SI.showCvImg[0], SI.ui.labelShowImg)
+        SI.ShowPic(SI.processingImgQueue[0], SI.ui.labelShowImg)
         print(SI.showCvW, SI.showCvH)
         print("Debug")
         # 更改图片信息尺寸
@@ -151,7 +151,7 @@ class Resize:
     def CustomizeSizeH(self):
         SI.showCvH = SI.ui.sBoxResizeH.value()
         self.ChangeSizeAndResize("h")
-        SI.ShowPic(SI.showCvImg[0], SI.ui.labelShowImg)
+        SI.ShowPic(SI.processingImgQueue[0], SI.ui.labelShowImg)
         print("debug2")
         # 更改图片信息尺寸
         self.showImgInfoRefresh()

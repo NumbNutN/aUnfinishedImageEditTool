@@ -8,12 +8,23 @@ from lib.share import SI
 from lib.resize import Resize
 from lib.transparent import Transparent
 from lib.processingQueue import ProcessingQueue
+from lib.edgeDetection import EdgeDetection
+
+
 
 class FIleMenu:
+    '''
+    这个类负责管理文件选项卡,功能包括
+        1. def __init__(self): 为主窗口的文件选项卡设置触发事件，同时加载历史打开文件窗口
+        2. def readFile(self,filePath): 打开一个图片的封装函数，用于替代cv2.imread()来解决路径不能包含中文的问题
+        3. def OpenFile(self,openType,filePath = None,img = None): 实现该工具的三种文件打开方式，把图片装载在历史图片队列里并显示在
+
+    '''
 
     OPENFILEFROMCUSTOMIZEPATH = 100    #调出资源管理器的路径选择供用户挑选
     OPENFILEFROMEXISTPATH = 101        #从系统记录的已有路径调取
     OPENFILEFROMMEMORY = 102           #从内存中存在的图片调取
+
     def __init__(self):
         SI.ui.fileOpenAction.triggered.connect(lambda: self.OpenFile(self.OPENFILEFROMCUSTOMIZEPATH))
         SI.ui.saveAsAction.triggered.connect(self.SaveFile)
@@ -26,7 +37,7 @@ class FIleMenu:
             for path in file:
                 SI.historyFilePath.append(path.strip())
 
-        print(SI.historyFilePath)
+        #print(SI.historyFilePath)
 
         #加载最近打开图片窗口
         qfile_historyFile_stats = QFile("./HistoryFile.ui")
@@ -63,9 +74,9 @@ class FIleMenu:
             SI.cvImg = img
             print("Open a file from memory")
 
-        SI.showCvImg.insert(0,SI.cvImg)
-        SI.showCvImg.insert(0, SI.cvImg)
-        SI.ShowPic(SI.showCvImg[0],SI.ui.labelShowImg)
+        SI.processingImgQueue.insert(0,SI.cvImg)
+        SI.processingImgQueue.insert(0, SI.cvImg)
+        SI.ShowPic(SI.processingImgQueue[0],SI.ui.labelShowImg)
         SI.oriCvW = SI.showCvW = SI.cvImg.shape[1]
         SI.oriCvH = SI.showCvH = SI.cvImg.shape[0]
         SI.resize = Resize()
@@ -84,9 +95,6 @@ class FIleMenu:
         print(SI.historyFilePath)
 
 
-
-
-
         # 直接将磁盘文件加载为QPixmap格式的方法
         # img = QPixmap(filePath)
         # self.ui.labelShowImg.setPixmap(img)
@@ -100,7 +108,7 @@ class FIleMenu:
         filePath = QFileDialog.getExistingDirectory(SI.ui,"选择保存的路径")
         print(filePath+"/TempName.jpg")
 
-        cv2.imwrite(filePath+"/TempName.jpg",SI.showCvImg[0])
+        cv2.imwrite(filePath+"/TempName.jpg",SI.processingImgQueue[0])
 
     def WrapOutHistory(self):
         SI.historyFilePath = []
@@ -141,109 +149,16 @@ class FIleMenu:
 
 
 
-class EdgeDetection:
-
-    tempSobelImg = None
-    tempFlipImg = None
-
-    def __init__(self):
-        SI.ui.cBoxCvtMargin.stateChanged.connect(self.FindEdge)
-        SI.ui.bGroupMarginBackground.buttonClicked.connect(self.PositiveAndNegativeChange)
-        #默认正面
-        SI.ui.radioButtonPositive.setChecked(True)
-
-        # 设置宽度滑块最大/小值
-        SI.ui.sliderMarginAdjustStrength.setMinimum(0)
-        SI.ui.sliderMarginAdjustStrength.setMaximum(255)
-
-        # 设置步长
-        SI.ui.sliderMarginAdjustStrength.setSingleStep(1)
-
-        # 设置当前值
-        SI.ui.sliderMarginAdjustStrength.setValue(127)
-        SI.ui.labelEdgeStrength.setText(str(SI.ui.sliderMarginAdjustStrength.value()))
-
-        # 设置刻度的位置，刻度在下方
-        SI.ui.sliderMarginAdjustStrength.setTickPosition(QSlider.TicksBelow)
-
-        # 设置刻度的间隔
-        SI.ui.sliderMarginAdjustStrength.setTickInterval(int(1 / 5 * 255))
-
-        # 设置控件的信号处理函数
-        SI.ui.sliderMarginAdjustStrength.valueChanged.connect(self.AdjustStrength)
-
-
-    def FindEdge(self):
-        if (SI.ui.cBoxCvtMargin.isChecked()):
-            grayImg = cv2.cvtColor(SI.showCvImg[0],cv2.COLOR_BGR2GRAY)
-            sobelx = cv2.Sobel(grayImg, -1, 1, 0, ksize=3)
-            sobely = cv2.Sobel(grayImg, -1, 0, 1, ksize=3)
-            self.tempSobelImg = cv2.addWeighted(sobelx, 0.5, sobely, 0.5, 0)
-            self.tempFlipImg = self.FlipImg(self.tempSobelImg)
-            self.PositiveAndNegativeChange()
-            #SI.showCvImg[0] = self.tempSobelImg
-            #SI.ShowGrayPic(SI.showCvImg[0], SI.ui.labelShowImg)
-        else:
-            SI.showCvImg[0] = SI.showCvImg[1]
-            SI.ShowPic(SI.showCvImg[0], SI.ui.labelShowImg)
-        SI.PrintSimpleImgInfo(SI.showCvImg[0], SI.ui.labelShowImgInfo)
-
-        print(SI.showCvImg[0].shape)
-
-        # cv2.imshow("window", SI.showCvImg[0])
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
-        # SI.ShowGrayPic(SI.showCvImg[0], SI.ui.labelShowImg)
-
-    def AdjustStrength(self):
-        if (SI.ui.radioButtonNagetive.isChecked()):
-            #SI.showCvImg[0] = cv2.inRange(self.tempFlipImg,255 - SI.ui.sliderMarginAdjustStrength.value(),256)
-            SI.showCvImg[0] = cv2.inRange(self.tempSobelImg,0, SI.ui.sliderMarginAdjustStrength.value())
-
-        else:
-            SI.showCvImg[0] = cv2.inRange(self.tempSobelImg, 255 - SI.ui.sliderMarginAdjustStrength.value(), 255)
-
-        SI.ShowPic(SI.showCvImg[0], SI.ui.labelShowImg)
-        SI.ui.labelEdgeStrength.setText(str(SI.ui.sliderMarginAdjustStrength.value()))
-
-    def FlipImg(self,img):
-        newImg = np.copy(img)
-        i = 0
-        j = 0
-        while i < newImg.shape[0]:
-            while j < newImg.shape[1]:
-                newImg[i][j] = 255 - img[i][j]
-                j += 1
-            j = 0
-            i += 1
-        return newImg
-
-    def PositiveAndNegativeChange(self):
-        if(SI.ui.cBoxCvtMargin.isChecked()):
-
-            if(SI.ui.radioButtonPositive.isChecked()):
-                SI.showCvImg[0] = self.tempSobelImg
-                print("positive")
-            else:
-                SI.showCvImg[0] = self.tempFlipImg
-                SI.print_img_txt(SI.showCvImg[0])
-                print("negative")
-            SI.ShowGrayPic(SI.showCvImg[0], SI.ui.labelShowImg)
-
-
-
-
-
 class TabWidget:
     def __init__(self):
         SI.ui.tabWidgetFunction.currentChanged.connect(self.TabChange)
 
     def TabChange(self):
         print(SI.ui.tabWidgetFunction.currentIndex())
-        if not(np.array_equal(SI.showCvImg[0],SI.showCvImg[1])):
-            SI.showCvImg.insert(0,SI.showCvImg[0])
-        print("Image Edit Stack: "+str(len(SI.showCvImg)))
-        SI.ShowPic(SI.showCvImg[0],SI.ui.labelShowImg)
+        if not(np.array_equal(SI.processingImgQueue[0],SI.processingImgQueue[1])):
+            SI.processingImgQueue.insert(0,SI.processingImgQueue[0])
+        print("Image Edit Stack: "+str(len(SI.processingImgQueue)))
+        SI.ShowPic(SI.processingImgQueue[0],SI.ui.labelShowImg)
         SI.advancedinfo.InfoRefresh()
 
 
@@ -253,14 +168,14 @@ class GrayScale:
 
     def TranToGrayScal(self):
         if (SI.ui.cboxCvtToGrayScale.isChecked()):
-            SI.showCvImg[0] = cv2.cvtColor(SI.showCvImg[1],cv2.COLOR_BGR2GRAY)
-            SI.ShowGrayPic(SI.showCvImg[0],SI.ui.labelShowImg)
+            SI.processingImgQueue[0] = cv2.cvtColor(SI.processingImgQueue[1],cv2.COLOR_BGR2GRAY)
+            SI.ShowGrayPic(SI.processingImgQueue[0],SI.ui.labelShowImg)
             print("ConvertToGrayScale")
         else:
-            SI.showCvImg[0] = SI.showCvImg[1]
-            SI.ShowPic(SI.showCvImg[0], SI.ui.labelShowImg)
+            SI.processingImgQueue[0] = SI.processingImgQueue[1]
+            SI.ShowPic(SI.processingImgQueue[0], SI.ui.labelShowImg)
             print("ReturnToColor")
-        SI.PrintSimpleImgInfo(SI.showCvImg[0], SI.ui.labelShowImgInfo)
+        SI.PrintSimpleImgInfo(SI.processingImgQueue[0], SI.ui.labelShowImgInfo)
 
 
 class AdvancedInfo:
@@ -268,16 +183,19 @@ class AdvancedInfo:
         pass
 
     def InfoRefresh(self):
-        SI.ui.labelQueueNum.setText("图片处理历史队列数： "+str(len(SI.showCvImg)))
+        SI.ui.labelQueueNum.setText(
+            "图片"
+            "图片处理历史队列数： "+str(len(SI.processingImgQueue))+'\n'+
+                                    "")
 
 app = QApplication([])
 
-qfile_stats = QFile("ImgMargin.ui")
+qfile_stats = QFile("main.ui")
 qfile_stats.open(QFile.ReadOnly)
 qfile_stats.close()
 SI.ui = QUiLoader().load(qfile_stats)
 SI.InitImg(SI)
-SI.ShowPic(SI.showCvImg[0],SI.ui.labelShowImg)
+SI.ShowPic(SI.processingImgQueue[0],SI.ui.labelShowImg)
 
 
 SI.fileMenu = FIleMenu()

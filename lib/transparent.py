@@ -140,10 +140,10 @@ class Transparent:
                 down = SI.ui.sliderDark.value()
             else:
                 down = 0
-            SI.showCvImg[0] = self.changeToBGRA(SI.showCvImg[1], up,up,up,down,down,down)
+            SI.processingImgQueue[0] = self.changeToBGRA(SI.processingImgQueue[1], up,up,up,down,down,down)
             print("Light: "+"Greater than"+str(up)+" Less than"+str(down))
-            # SI.showCvImg[0] = self.changeToBGRA(SI.showCvImg[1], up, up, up, 255, 255, 255)
-            # SI.showCvImg[0] = self.changeToBGRA(SI.showCvImg[1], 0,0,0,down,down,down)
+            # SI.processingImgQueue[0] = self.changeToBGRA(SI.processingImgQueue[1], up, up, up, 255, 255, 255)
+            # SI.processingImgQueue[0] = self.changeToBGRA(SI.processingImgQueue[1], 0,0,0,down,down,down)
 
         elif (sliderType == self.SLIDERCOLOR):
             if(SI.ui.cBoxColorHigh.isChecked()):
@@ -158,10 +158,10 @@ class Transparent:
                 bTL = SI.ui.sliderGLow.value()
             else:
                 rTL = gTL = bTL = 0
-            SI.showCvImg[0] = self.changeToBGRA(SI.showCvImg[1],rTH,gTH,bTH,rTL,gTL,bTL)
+            SI.processingImgQueue[0] = self.changeToBGRA(SI.processingImgQueue[1],rTH,gTH,bTH,rTL,gTL,bTL)
 
-        SI.ShowBGRAPic(SI.showCvImg[0], SI.ui.labelShowImg)
-        SI.PrintSimpleImgInfo(SI.showCvImg[0],SI.ui.labelShowImg)
+        SI.ShowBGRAPic(SI.processingImgQueue[0], SI.ui.labelShowImg)
+        SI.PrintSimpleImgInfo(SI.processingImgQueue[0],SI.ui.labelShowImg)
         print("setTransparent")
 
     def showSliderValue(self,label,slider,sliderType,clabel,crgblabel=None):
