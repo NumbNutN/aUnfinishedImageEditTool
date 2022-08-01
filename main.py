@@ -50,12 +50,15 @@ class FIleMenu:
 
     #兼容中文的读取方案
     def readFile(self,filePath):
-        raw_data = np.fromfile(filePath,dtype=np.uint8)
-        img = cv2.imdecode(raw_data,cv2.IMREAD_COLOR)
-        return img
+        if filePath:
+            raw_data = np.fromfile(filePath,dtype=np.uint8)
+            img = cv2.imdecode(raw_data,cv2.IMREAD_UNCHANGED)
+            return img
+        else:
+            return None
+
 
     def OpenFile(self,openType,filePath = None,img = None):
-
         if (openType == self.OPENFILEFROMCUSTOMIZEPATH):
             filePath,fileType = QFileDialog.getOpenFileName(
                 SI.ui,
@@ -74,34 +77,35 @@ class FIleMenu:
             SI.cvImg = img
             print("Open a file from memory")
 
-        SI.processingImgQueue.insert(0,SI.cvImg)
-        SI.processingImgQueue.insert(0, SI.cvImg)
-        SI.ShowPic(SI.processingImgQueue[0],SI.ui.labelShowImg)
-        SI.oriCvW = SI.showCvW = SI.cvImg.shape[1]
-        SI.oriCvH = SI.showCvH = SI.cvImg.shape[0]
-        SI.resize = Resize()
-        Resize.showImgInfoRefresh(Resize)
+        if SI.cvImg is not None:
+            SI.processingImgQueue.insert(0,SI.cvImg)
+            SI.processingImgQueue.insert(0, SI.cvImg)
+            SI.ShowBGRPic(SI.processingImgQueue[0],SI.ui.labelImgViewpot)
+            SI.oriW = SI.curW = SI.cvImg.shape[1]
+            SI.oriH = SI.curH = SI.cvImg.shape[0]
+            SI.resize = Resize()
+            Resize.showImgInfoRefresh(Resize)
 
-        #历史记录最多存储10条，超过10条以队列的形式从队尾顶出
-        if len(SI.historyFilePath) >= 10:
-            SI.historyFilePath.pop()
-        SI.historyFilePath.insert(0,filePath)
+            #历史记录最多存储10条，超过10条以队列的形式从队尾顶出
+            if len(SI.historyFilePath) >= 10:
+                SI.historyFilePath.pop()
+            SI.historyFilePath.insert(0,filePath)
 
-        #每次更新状态后重新写最近打开历史记录文件
-        with open ("./historyFile.txt",'w') as file:
-                for path in SI.historyFilePath:
-                    if path is not None:
-                        file.write(path+'\n')
-        print(SI.historyFilePath)
+            #每次更新状态后重新写最近打开历史记录文件
+            with open ("./historyFile.txt",'w') as file:
+                    for path in SI.historyFilePath:
+                        if path is not None:
+                            file.write(path+'\n')
+            print(SI.historyFilePath)
 
 
         # 直接将磁盘文件加载为QPixmap格式的方法
         # img = QPixmap(filePath)
-        # self.ui.labelShowImg.setPixmap(img)
+        # self.ui.labelImgViewpot.setPixmap(img)
 
         # #适当调整图片大小的逻辑
         # if(SI.cvImg.shape[1]>1280 or SI.cvImg.shape[0]>720):
-        #     SI.ui.labelShowImg.setMaximumSize(1280,int(1280/SI.showCvW*SI.showCvH))
+        #     SI.ui.labelImgViewpot.setMaximumSize(1280,int(1280/SI.curW*SI.curH))
 
 
     def SaveFile(self):
@@ -127,15 +131,17 @@ class FIleMenu:
     def RecentFileShowCurrentItem(self):
         path = SI.historyPathViewUi.listHistoryFile.currentItem().text()
         imgCvPreview = self.readFile(path)
-        SI.ShowPic(imgCvPreview,SI.historyPathViewUi.labelHistoryPreview)
+        SI.ShowBGRPic(imgCvPreview,SI.historyPathViewUi.labelHistoryPreview)
 
-        try:
-            channelsNum = imgCvPreview.shape[2]
-        except IndexError:
-            channelsNum = 2
-            imgType = "?"
-        else:
-            imgType = "RGB888"
+        # try:
+        #     channelsNum = imgCvPreview.shape[2]
+        # except IndexError:
+        #     channelsNum = 2
+        #     imgType = "?"
+        # else:
+        #     imgType = "RGB888"
+        channelsNum = SI.returnChannelNum(imgCvPreview)
+        imgType = SI.returnImgType(SI,imgCvPreview)
 
         SI.historyPathViewUi.labelPreviewInfo.setText(
             "size: "+str(imgCvPreview.shape[1])+'x'+str(imgCvPreview.shape[0])+'\t'+
@@ -158,7 +164,7 @@ class TabWidget:
         if not(np.array_equal(SI.processingImgQueue[0],SI.processingImgQueue[1])):
             SI.processingImgQueue.insert(0,SI.processingImgQueue[0])
         print("Image Edit Stack: "+str(len(SI.processingImgQueue)))
-        SI.ShowPic(SI.processingImgQueue[0],SI.ui.labelShowImg)
+        SI.ShowBGRPic(SI.processingImgQueue[0],SI.ui.labelImgViewpot)
         SI.advancedinfo.InfoRefresh()
 
 
@@ -169,11 +175,11 @@ class GrayScale:
     def TranToGrayScal(self):
         if (SI.ui.cboxCvtToGrayScale.isChecked()):
             SI.processingImgQueue[0] = cv2.cvtColor(SI.processingImgQueue[1],cv2.COLOR_BGR2GRAY)
-            SI.ShowGrayPic(SI.processingImgQueue[0],SI.ui.labelShowImg)
+            SI.ShowGrayPic(SI.processingImgQueue[0],SI.ui.labelImgViewpot)
             print("ConvertToGrayScale")
         else:
             SI.processingImgQueue[0] = SI.processingImgQueue[1]
-            SI.ShowPic(SI.processingImgQueue[0], SI.ui.labelShowImg)
+            SI.ShowBGRPic(SI.processingImgQueue[0], SI.ui.labelImgViewpot)
             print("ReturnToColor")
         SI.PrintSimpleImgInfo(SI.processingImgQueue[0], SI.ui.labelShowImgInfo)
 
@@ -183,10 +189,16 @@ class AdvancedInfo:
         pass
 
     def InfoRefresh(self):
-        SI.ui.labelQueueNum.setText(
-            "图片"
-            "图片处理历史队列数： "+str(len(SI.processingImgQueue))+'\n'+
-                                    "")
+        SI.ui.textBrowser.setText(
+        "当前图像属性：\n"\
+        "图片尺寸: %dx%d\t"\
+        "通道数: %d\n"\
+        "图片类型: %s\t"\
+        "位深度: %d\n"\
+        "----------------------\n"\
+        "状态：\n"\
+        "图片处理历史队列数: %d\n"
+             % (SI.curW, SI.curH,SI.imgChannel,SI.returnImgType(SI,SI.processingImgQueue[0]),SI.returnColorDepth(SI,SI.processingImgQueue[0]),len(SI.processingImgQueue)))
 
 app = QApplication([])
 
@@ -195,7 +207,7 @@ qfile_stats.open(QFile.ReadOnly)
 qfile_stats.close()
 SI.ui = QUiLoader().load(qfile_stats)
 SI.InitImg(SI)
-SI.ShowPic(SI.processingImgQueue[0],SI.ui.labelShowImg)
+SI.ShowBGRPic(SI.processingImgQueue[0],SI.ui.labelImgViewpot)
 
 
 SI.fileMenu = FIleMenu()

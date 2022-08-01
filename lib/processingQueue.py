@@ -7,7 +7,7 @@ from PySide2.QtUiTools import QUiLoader
 from PySide2.QtCore import *
 from lib.ui_ProcessingQueue import Ui_ProcessingQueue
 
-
+#继承类QLabel，为了自定义labael控件的点击效果
 class ExitQLable(QLabel):
     def __init__(self,label):
         self.label = label
@@ -22,8 +22,9 @@ class ExitQLable(QLabel):
                 print("List:"+str(ProcessingQueue.previewImgLabel[index]))
 
                 if(ProcessingQueue.previewImgLabel[index] == self):
-                    SI.ShowPic(SI.processingImgQueue[index],self.label)
+                    SI.ShowBGRPic(SI.processingImgQueue[index],self.label)
                     print(index)
+                    ProcessingQueue.selectImgOrder = index
                     break
         print("click previous precessing img")
 
@@ -31,17 +32,23 @@ class ExitQLable(QLabel):
         self.setToolTip("关闭")  ##停留气泡
 
 
-
 class ProcessingQueue(QWidget,Ui_ProcessingQueue):
+    '''
+    这个类定义菜单栏-编辑-查阅操作队列的UI和功能实现
+
+    查阅操作队列选项用于展示图片历史操作队列SI.processingImgQueue储存的图片（最多10张）
+    方便用户撤回先前的操作
+    '''
 
     previewImgLabel = []
     EmptyNotice = None
+    selectImgOrder = None
 
     def __init__(self):
         super().__init__()
         self.setupUi(self)
         SI.ui.actionViewProcessingQueue.triggered.connect(self.LoadProcessingImg)
-        self.btnBack.clicked.connect(self.quitProcessingQueue)
+        self.btnBack.clicked.connect(self.BackToGivenProcessingImg)
 
 
     def closeEvent(self, event):
@@ -56,7 +63,7 @@ class ProcessingQueue(QWidget,Ui_ProcessingQueue):
         创建label的函数QLabel被继承重写其单击触发事件来实现选择图片的功能
         :return: None
         '''
-        self.show()
+
 
         if not SI.processingImgQueue:
             self.EmptyNotice = QLabel(self)
@@ -69,8 +76,10 @@ class ProcessingQueue(QWidget,Ui_ProcessingQueue):
 
             self.previewImgLabel.append(widget)
             self.vLayoutProcessingQueue.addWidget(widget)
-            SI.ShowPic(cv2.resize(img,(200,int(200/img.shape[1]*img.shape[0]))),widget)
+            SI.ShowBGRPic(cv2.resize(img,(200,int(200/img.shape[1]*img.shape[0]))),widget)
         print(self.previewImgLabel)
+
+        self.show()
 
         #Qicon方案废案
         #把addChildWidget改成addWidget就好了？？？
@@ -82,15 +91,33 @@ class ProcessingQueue(QWidget,Ui_ProcessingQueue):
         #抽象滚动页面 不会用
         #QAbstractScrollArea(self.vLayoutProcessingQueue)
 
+    def BackToGivenProcessingImg(self):
+        SI.processingImgQueue[0:self.selectImgOrder] = []
+        #self.hide()
+        self.quitProcessingQueue()
+
+
     def quitProcessingQueue(self):
         if self.EmptyNotice:
             self.EmptyNotice.deleteLater()
         self.EmptyNotice = None
 
-        #最后保留的方案，每次打开该页面都重新动态加载一遍ui的py文件来彻底丢弃僵尸控件，就是不知道它们还在不在内存里
+        # for index in range(self.vLayoutProcessingQueue.count()):
+        #     self.vLayoutProcessingQueue.itemAt(index).widget().deleteLater()
+        # for label in self.previewImgLabel:
+        #     self.vLayoutProcessingQueue.removeWidget(label)
+        #     #label.clear()
+        #     label.deleteLater()
+        self.close()
+        self.destroy(True)
         self.setupUi(self)
-        SI.ui.actionViewProcessingQueue.triggered.connect(self.LoadProcessingImg)
-        self.btnBack.clicked.connect(self.quitProcessingQueue)
+        #self.previewImgLabel = []
+
+        #最后保留的方案，每次打开该页面都重新动态加载一遍ui的py文件来彻底丢弃僵尸控件，就是不知道它们还在不在内存里
+        #self.destroy()
+
+        #self.setupUi(self)
+        #self.btnBack.clicked.connect(self.BackToGivenProcessingImg)
 
         #对控件的清除回收总是会遇到某种错误，页面上已经不显示deletelater()处理的控件，但鼠标左键触发事件的触发主体依然是被删除的控件导致报错
 

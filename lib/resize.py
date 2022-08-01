@@ -2,41 +2,39 @@ from lib.share import SI
 import cv2
 import numpy as np
 from PySide2.QtWidgets import QApplication ,QMessageBox ,QTableWidgetItem ,QFileDialog ,QLabel ,QSlider
-from PySide2.QtUiTools import QUiLoader
-from PySide2.QtCore import *
 
 class Resize:
     def __init__(self):
 
         # 设置宽度滑块最大/小值
         SI.ui.sliderW.setMinimum(1)
-        SI.ui.sliderW.setMaximum(SI.oriCvW)
+        SI.ui.sliderW.setMaximum(SI.oriW)
         # 设置高度滑块最大/小值
         SI.ui.sliderH.setMinimum(1)
-        SI.ui.sliderH.setMaximum(SI.oriCvH)
+        SI.ui.sliderH.setMaximum(SI.oriH)
         # 设置步长
         SI.ui.sliderW.setSingleStep(1)
         SI.ui.sliderH.setSingleStep(1)
 
         # 设置当前值
-        SI.ui.sliderW.setValue(SI.oriCvW)
-        SI.ui.sliderH.setValue(SI.oriCvH)
+        SI.ui.sliderW.setValue(SI.oriW)
+        SI.ui.sliderH.setValue(SI.oriH)
 
         # 设置刻度的位置，刻度在下方
         SI.ui.sliderW.setTickPosition(QSlider.TicksBelow)
         SI.ui.sliderH.setTickPosition(QSlider.TicksBelow)
 
         # 设置刻度的间隔
-        SI.ui.sliderW.setTickInterval(int(1 / 5 * SI.oriCvW))
-        SI.ui.sliderH.setTickInterval(int(1 / 5 * SI.oriCvH))
+        SI.ui.sliderW.setTickInterval(int(1 / 5 * SI.oriW))
+        SI.ui.sliderH.setTickInterval(int(1 / 5 * SI.oriH))
 
         # 设置控件的信号处理函数
         SI.ui.sliderW.valueChanged.connect(self.SliderChangeW)
         SI.ui.sliderH.valueChanged.connect(self.SliderChangeH)
 
         # 设置步长调节器的最大/小值
-        SI.ui.sBoxResizeW.setMaximum(SI.oriCvW)
-        SI.ui.sBoxResizeH.setMaximum(SI.oriCvH)
+        SI.ui.sBoxResizeW.setMaximum(SI.oriW)
+        SI.ui.sBoxResizeH.setMaximum(SI.oriH)
         SI.ui.sBoxResizeW.setMinimum(1)
         SI.ui.sBoxResizeH.setMinimum(1)
 
@@ -49,14 +47,12 @@ class Resize:
         SI.ui.sBoxResizeH.valueChanged.connect(self.CustomizeSizeH)
 
         # 设置步长调节器的初始值
-        SI.ui.sBoxResizeW.setValue(SI.oriCvW)
-        SI.ui.sBoxResizeH.setValue(SI.oriCvH)
+        SI.ui.sBoxResizeW.setValue(SI.oriW)
+        SI.ui.sBoxResizeH.setValue(SI.oriH)
 
         #默认像素缩放模式
         SI.ui.rbtnResizePixel.setChecked(True)
 
-        # #固定缩放比控件
-        # SI.ui.bGroupFixedRatio.buttonClicked.connect(self.changeFixedRatioRule)
 
     # resize的两个个重要全局影响选项
     # 1- 是否选择了固定缩放比    SI.ui.cboxFixedRatio.isChecked()
@@ -65,19 +61,19 @@ class Resize:
     def ChangeSizeAndResize(self, dir):
         if (SI.ui.cboxFixedRatio.isChecked()):
             if (dir == "w"):
-                SI.showCvH = int(SI.showCvW / SI.oriCvW * SI.oriCvH)
+                SI.curH = int(SI.curW / SI.oriW * SI.oriH)
             elif (dir == "h"):
-                SI.showCvW = int(SI.showCvH / SI.oriCvH * SI.oriCvW)
+                SI.curW = int(SI.curH / SI.oriH * SI.oriW)
 
-        SI.processingImgQueue[0] = cv2.resize(SI.processingImgQueue[1], (SI.showCvW, SI.showCvH))
+        SI.processingImgQueue[0] = cv2.resize(SI.processingImgQueue[1], (SI.curW, SI.curH))
 
     def showImgInfoRefresh(self):
         # 更新图片下端尺寸
         SI.PrintSimpleImgInfo(SI.processingImgQueue[0],SI.ui.labelShowImgInfo)
-        #SI.ui.labelShowImgInfo.setText("Size:%dx%d" % (SI.showCvW, SI.showCvH))
+        #SI.ui.labelShowImgInfo.setText("Size:%dx%d" % (SI.curW, SI.curH))
         # 更新滑动条下方的尺寸
-        SI.ui.labelSliderWInfo.setText(str(SI.showCvW))
-        SI.ui.labelSliderHInfo.setText(str(SI.showCvH))
+        SI.ui.labelSliderWInfo.setText(str(SI.curW))
+        SI.ui.labelSliderHInfo.setText(str(SI.curH))
 
         # 下面的改动会调用这些控件的回调函数导致极大的性能浪费，最严重时，会触发python递归函数栈满溢出导致程序异常中止，（python最多递归1000层）
         # 对所有的控件进行信号屏蔽
@@ -86,11 +82,11 @@ class Resize:
         SI.ui.sliderW.blockSignals(True)
         SI.ui.sliderH.blockSignals(True)
         # 更新自定义数字筐的尺寸
-        SI.ui.sBoxResizeW.setValue(SI.showCvW)
-        SI.ui.sBoxResizeH.setValue(SI.showCvH)
+        SI.ui.sBoxResizeW.setValue(SI.curW)
+        SI.ui.sBoxResizeH.setValue(SI.curH)
         # 请自行设置滑动条的数据
-        SI.ui.sliderW.setValue(SI.showCvW)
-        SI.ui.sliderH.setValue(SI.showCvH)
+        SI.ui.sliderW.setValue(SI.curW)
+        SI.ui.sliderH.setValue(SI.curH)
 
         # 取消屏蔽
         SI.ui.sBoxResizeW.blockSignals(False)
@@ -99,7 +95,7 @@ class Resize:
         SI.ui.sliderH.blockSignals(False)
 
     '''
-    这个函数是W滑动条的Trigger
+    这个函数是W滑动条滑动的事件触发函数
     判断内容包括
      1.是否固定缩放比  SI.ui.cboxFixedRatio.isChecked()
        固定则要同时移动另一个滑动条
@@ -109,24 +105,24 @@ class Resize:
     '''
 
     def SliderChangeW(self):
-        SI.showCvW = SI.ui.sliderW.value()
-        # print(SI.showCvW/SI.oriCvW)
+        SI.curW = SI.ui.sliderW.value()
+        # print(SI.curW/SI.oriW)
         # 原方案  换算比例
-        # SI.processingImgQueue = self.resizeShowImg(SI.cvImg,0,0,fx=SI.showCvW/SI.oriCvW)
-        # SI.showCvH = SI.processingImgQueue.shape[0]
-        # SI.ui.sliderH.setValue(SI.showCvH)
+        # SI.processingImgQueue = self.resizeShowImg(SI.cvImg,0,0,fx=SI.curW/SI.oriW)
+        # SI.curH = SI.processingImgQueue.shape[0]
+        # SI.ui.sliderH.setValue(SI.curH)
 
         self.ChangeSizeAndResize("w")
 
-        SI.ShowPic(SI.processingImgQueue[0], SI.ui.labelShowImg)
+        SI.ShowBGRPic(SI.processingImgQueue[0], SI.ui.labelImgViewpot)
         print("debug4")
         # 更改图片信息尺寸
         self.showImgInfoRefresh()
 
     def SliderChangeH(self):
-        SI.showCvH = SI.ui.sliderH.value()
+        SI.curH = SI.ui.sliderH.value()
         self.ChangeSizeAndResize("h")
-        SI.ShowPic(SI.processingImgQueue[0], SI.ui.labelShowImg)
+        SI.ShowBGRPic(SI.processingImgQueue[0], SI.ui.labelImgViewpot)
         print("debug3")
         # 更改图片信息尺寸
         self.showImgInfoRefresh()
@@ -140,18 +136,18 @@ class Resize:
     '''
 
     def CustomizeSizeW(self):
-        SI.showCvW = SI.ui.sBoxResizeW.value()
+        SI.curW = SI.ui.sBoxResizeW.value()
         self.ChangeSizeAndResize("w")
-        SI.ShowPic(SI.processingImgQueue[0], SI.ui.labelShowImg)
-        print(SI.showCvW, SI.showCvH)
+        SI.ShowBGRPic(SI.processingImgQueue[0], SI.ui.labelImgViewpot)
+        print(SI.curW, SI.curH)
         print("Debug")
         # 更改图片信息尺寸
         self.showImgInfoRefresh()
 
     def CustomizeSizeH(self):
-        SI.showCvH = SI.ui.sBoxResizeH.value()
+        SI.curH = SI.ui.sBoxResizeH.value()
         self.ChangeSizeAndResize("h")
-        SI.ShowPic(SI.processingImgQueue[0], SI.ui.labelShowImg)
+        SI.ShowBGRPic(SI.processingImgQueue[0], SI.ui.labelImgViewpot)
         print("debug2")
         # 更改图片信息尺寸
         self.showImgInfoRefresh()

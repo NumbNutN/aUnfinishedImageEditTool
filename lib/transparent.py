@@ -160,8 +160,8 @@ class Transparent:
                 rTL = gTL = bTL = 0
             SI.processingImgQueue[0] = self.changeToBGRA(SI.processingImgQueue[1],rTH,gTH,bTH,rTL,gTL,bTL)
 
-        SI.ShowBGRAPic(SI.processingImgQueue[0], SI.ui.labelShowImg)
-        SI.PrintSimpleImgInfo(SI.processingImgQueue[0],SI.ui.labelShowImg)
+        SI.ShowBGRAPic(SI.processingImgQueue[0], SI.ui.labelImgViewpot)
+        SI.PrintSimpleImgInfo(SI.processingImgQueue[0],SI.ui.labelImgViewpot)
         print("setTransparent")
 
     def showSliderValue(self,label,slider,sliderType,clabel,crgblabel=None):
@@ -171,19 +171,19 @@ class Transparent:
             for i in range(SI.cSamW):
                 for j in range(SI.cSamH):
                     SI.colorSample[i][j]=(val,val,val)
-            SI.ShowPic(SI.colorSample.astype(np.uint8), clabel)
+            SI.ShowBGRPic(SI.colorSample.astype(np.uint8), clabel)
 
         elif(sliderType==self.SLIDERHCOLOR):
             for i in range(SI.cSamW):
                 for j in range(SI.cSamH):
                     SI.colorSample[i][j]=(SI.ui.sliderBHigh.value(),SI.ui.sliderGHigh.value(),SI.ui.sliderRHigh.value())
-            SI.ShowPic(SI.colorSample.astype(np.uint8), clabel)
+            SI.ShowBGRPic(SI.colorSample.astype(np.uint8), clabel)
 
         else:
             for i in range(SI.cSamW):
                 for j in range(SI.cSamH):
                     SI.colorSample[i][j]=(SI.ui.sliderBLow.value(),SI.ui.sliderGLow.value(),SI.ui.sliderRLow.value())
-            SI.ShowPic(SI.colorSample.astype(np.uint8), clabel)
+            SI.ShowBGRPic(SI.colorSample.astype(np.uint8), clabel)
 
 
 

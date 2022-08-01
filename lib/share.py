@@ -5,17 +5,14 @@ from PySide2.QtGui import QPixmap ,QImage, QIcon, QMouseEvent
 import cv2
 import numpy as np
 
-
 class SI:
-
     cvImg = None
     processingImgQueue = []
-    oriCvW = 0
-    oriCvH = 0
-    showCvW = None
-    showCvH = None
     historyFilePath = []
-    historyProcessing = []
+    oriW = 0
+    oriH = 0
+    curW = None
+    curH = None
     imgChannel = 0
 
     RESIZE = 100
@@ -23,19 +20,17 @@ class SI:
     DRAWEDGE = 102
     cSamW = 40
     cSamH = 40
+
     colorSample = np.zeros((cSamW,cSamH,3))
-    colorrgbSample = np.zeros((cSamW,cSamH,3))
-
-
+    colorRGBSample = np.zeros((cSamW,cSamH,3))
 
     def __init__(self):
         self.cvImg = None
         self.processingImgQueue = []
-        self.oriCvW = 0
-        self.oriCvH = 0
-        self.showCvW = None
-        self.showCvH = None
-
+        self.oriW = 0
+        self.oriH = 0
+        self.curW = None
+        self.curH = None
         self.historyFilePath = []
 
     def createSampleImg(self):
@@ -46,20 +41,17 @@ class SI:
         self.cvImg = cv2.imread("./InitImg.png")
         self.processingImgQueue.insert(0,self.cvImg)
         self.processingImgQueue.insert(0, self.cvImg)
-        self.oriCvW = self.showCvW = self.cvImg.shape[1]
-        self.oriCvH = self.showCvH = self.cvImg.shape[0]
+        self.oriW = self.curW = self.cvImg.shape[1]
+        self.oriH = self.curH = self.cvImg.shape[0]
 
 
-    def ShowPic(cvImg, label):
+    def ShowBGRPic(cvImg, label):
         cvImg = cv2.cvtColor(cvImg,cv2.COLOR_BGR2RGB)
-        #print(type(cvImg))
         showImg = QImage(cvImg.data, cvImg.shape[1], cvImg.shape[0],cvImg.shape[1]*3, QImage.Format_RGB888)
-
-        #   5.在PYQT5显示，需要转化为QPixmap格式
+        #在PYQT5显示，需要转化为QPixmap格式
         label.setPixmap(QPixmap.fromImage(showImg))
 
     def ShowGrayPic(cvImg, label):
-        #print(cvImg.shape)
         showImg = QImage(cvImg.data, cvImg.shape[1], cvImg.shape[0], cvImg.shape[1], QImage.Format_Grayscale8)
         label.setPixmap(QPixmap.fromImage(showImg))
 
@@ -69,23 +61,33 @@ class SI:
         label.setPixmap(QPixmap.fromImage(showImg))
         print("Show RGBA Image")
 
-    def ShowResizePic(npImg,w,h,label):
-        showImg = cv2.resize(npImg,w,h)
-        qImg = QImage(showImg, SI.cSamW, SI.cSamH, SI.cSamW*8, QImage.Format_RGB888)
-        label.setPixmap(QPixmap.fromImage(qImg))
-
-    def showIcon(npImg,container):
-        img = QImage(npImg, SI.cSamW, SI.cSamH, SI.cSamW * 8, QImage.Format_RGB888)
-        pix = QPixmap.fromImage(img)
-        container.setIcon(QIcon(pix))
-
 
     def PrintSimpleImgInfo(cvImg , label):
+        SI.imgChannel = SI.returnChannelNum(SI.processingImgQueue[0])
+        SI.ui.labelShowImgInfo.setText("Size:%dx%d Channel:%d" % (SI.curW, SI.curH,SI.imgChannel))
+
+    def returnChannelNum(cvImg):
         try:
-            SI.imgChannel = cvImg.shape[2]
+            imgChannel = cvImg.shape[2]
         except IndexError:
-            SI.imgChannel = 1
-        SI.ui.labelShowImgInfo.setText("Size:%dx%d Channel:%d" % (SI.showCvW, SI.showCvH,SI.imgChannel))
+            imgChannel = 1
+        return imgChannel
+
+    def returnImgType(self,cvImg):
+        if(cvImg.dtype == "uint8"):
+            channelNum = self.returnChannelNum(cvImg)
+            if(channelNum == 4):
+                return "ABGR32"
+            elif(channelNum == 3):
+                return "BGR888"
+            elif(channelNum == 1):
+                return "GrayScale"
+
+    def returnColorDepth(self,cvImg):
+        if(cvImg.dtype == "uint8"):
+            channelNum = self.returnChannelNum(cvImg)
+            return channelNum*8
+
     #测试工具
     def print_img_txt(img):
         i = 0

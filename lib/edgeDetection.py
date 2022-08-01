@@ -7,7 +7,7 @@ from PySide2.QtCore import *
 
 class EdgeDetection:
 
-    tempSobelImg = None
+    tempEdgeImg = None
     tempFlipImg = None
 
     def __init__(self):
@@ -15,6 +15,8 @@ class EdgeDetection:
         SI.ui.bGroupMarginBackground.buttonClicked.connect(self.PositiveAndNegativeChange)
         #默认正面
         SI.ui.radioButtonPositive.setChecked(True)
+        #默认canny检测
+        SI.ui.rBtnCanny.setChecked(True)
 
         # 设置宽度滑块最大/小值
         SI.ui.sliderMarginAdjustStrength.setMinimum(0)
@@ -34,40 +36,43 @@ class EdgeDetection:
         SI.ui.sliderMarginAdjustStrength.setTickInterval(int(1 / 5 * 255))
 
         # 设置控件的信号处理函数
-        SI.ui.sliderMarginAdjustStrength.valueChanged.connect(self.AdjustStrength)
+        SI.ui.sliderMarginAdjustStrength.valueChanged.connect(self.AdjustThreshold)
 
 
     def FindEdge(self):
+        #判断边缘检测checkBox是否选中
         if (SI.ui.cBoxCvtMargin.isChecked()):
-            grayImg = cv2.cvtColor(SI.processingImgQueue[0],cv2.COLOR_BGR2GRAY)
-            sobelx = cv2.Sobel(grayImg, -1, 1, 0, ksize=3)
-            sobely = cv2.Sobel(grayImg, -1, 0, 1, ksize=3)
-            self.tempSobelImg = cv2.addWeighted(sobelx, 0.5, sobely, 0.5, 0)
-            self.tempFlipImg = self.FlipImg(self.tempSobelImg)
+            #判断选中的描述边缘的方法
+            if (SI.ui.rBtnCanny.isChecked()):
+                self.tempEdgeImg = cv2.Canny(SI.processingImgQueue[0],0,256)
+            else:
+                if(SI.returnChannelNum(SI.processingImgQueue[0])!=1):
+                    grayImg = cv2.cvtColor(SI.processingImgQueue[0],cv2.COLOR_BGR2GRAY)
+                else:
+                    grayImg = SI.processingImgQueue[0]
+                sobelx = cv2.Sobel(grayImg, -1, 1, 0, ksize=3)
+                sobely = cv2.Sobel(grayImg, -1, 0, 1, ksize=3)
+                self.tempEdgeImg = cv2.addWeighted(sobelx, 0.5, sobely, 0.5, 0)
+
+            self.tempFlipImg = self.FlipImg(self.tempEdgeImg)
             self.PositiveAndNegativeChange()
-            #SI.processingImgQueue[0] = self.tempSobelImg
-            #SI.ShowGrayPic(SI.processingImgQueue[0], SI.ui.labelShowImg)
+
         else:
             SI.processingImgQueue[0] = SI.processingImgQueue[1]
-            SI.ShowPic(SI.processingImgQueue[0], SI.ui.labelShowImg)
+            SI.ShowBGRPic(SI.processingImgQueue[0], SI.ui.labelImgViewpot)
         SI.PrintSimpleImgInfo(SI.processingImgQueue[0], SI.ui.labelShowImgInfo)
 
         print(SI.processingImgQueue[0].shape)
 
-        # cv2.imshow("window", SI.processingImgQueue[0])
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
-        # SI.ShowGrayPic(SI.processingImgQueue[0], SI.ui.labelShowImg)
 
-    def AdjustStrength(self):
+    def AdjustThreshold(self):
         if (SI.ui.radioButtonNagetive.isChecked()):
-            #SI.processingImgQueue[0] = cv2.inRange(self.tempFlipImg,255 - SI.ui.sliderMarginAdjustStrength.value(),256)
-            SI.processingImgQueue[0] = cv2.inRange(self.tempSobelImg,0, SI.ui.sliderMarginAdjustStrength.value())
+            SI.processingImgQueue[0] = cv2.inRange(self.tempEdgeImg,0, SI.ui.sliderMarginAdjustStrength.value())
 
         else:
-            SI.processingImgQueue[0] = cv2.inRange(self.tempSobelImg, 255 - SI.ui.sliderMarginAdjustStrength.value(), 255)
+            SI.processingImgQueue[0] = cv2.inRange(self.tempEdgeImg, 255 - SI.ui.sliderMarginAdjustStrength.value(), 255)
 
-        SI.ShowPic(SI.processingImgQueue[0], SI.ui.labelShowImg)
+        SI.ShowBGRPic(SI.processingImgQueue[0], SI.ui.labelImgViewpot)
         SI.ui.labelEdgeStrength.setText(str(SI.ui.sliderMarginAdjustStrength.value()))
 
     def FlipImg(self,img):
@@ -86,12 +91,12 @@ class EdgeDetection:
         if(SI.ui.cBoxCvtMargin.isChecked()):
 
             if(SI.ui.radioButtonPositive.isChecked()):
-                SI.processingImgQueue[0] = self.tempSobelImg
+                SI.processingImgQueue[0] = self.tempEdgeImg
                 print("positive")
             else:
                 SI.processingImgQueue[0] = self.tempFlipImg
                 SI.print_img_txt(SI.processingImgQueue[0])
                 print("negative")
-            SI.ShowGrayPic(SI.processingImgQueue[0], SI.ui.labelShowImg)
+            SI.ShowGrayPic(SI.processingImgQueue[0], SI.ui.labelImgViewpot)
 
 
