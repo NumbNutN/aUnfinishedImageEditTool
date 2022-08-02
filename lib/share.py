@@ -33,39 +33,39 @@ class SI:
         self.curH = None
         self.historyFilePath = []
 
-    def createSampleImg(self):
-        img = np.zeros((3,3,3))
+    @classmethod
+    def InitImg(cls):
+        cls.cvImg = cv2.imread("./InitImg.png")
+        cls.processingImgQueue.insert(0,cls.cvImg)
+        cls.processingImgQueue.insert(0, cls.cvImg)
+        cls.oriW = cls.curW = cls.cvImg.shape[1]
+        cls.oriH = cls.curH = cls.cvImg.shape[0]
 
-
-    def InitImg(self):
-        self.cvImg = cv2.imread("./InitImg.png")
-        self.processingImgQueue.insert(0,self.cvImg)
-        self.processingImgQueue.insert(0, self.cvImg)
-        self.oriW = self.curW = self.cvImg.shape[1]
-        self.oriH = self.curH = self.cvImg.shape[0]
-
-
+    @staticmethod
     def ShowBGRPic(cvImg, label):
         cvImg = cv2.cvtColor(cvImg,cv2.COLOR_BGR2RGB)
         showImg = QImage(cvImg.data, cvImg.shape[1], cvImg.shape[0],cvImg.shape[1]*3, QImage.Format_RGB888)
         #在PYQT5显示，需要转化为QPixmap格式
         label.setPixmap(QPixmap.fromImage(showImg))
 
+    @staticmethod
     def ShowGrayPic(cvImg, label):
         showImg = QImage(cvImg.data, cvImg.shape[1], cvImg.shape[0], cvImg.shape[1], QImage.Format_Grayscale8)
         label.setPixmap(QPixmap.fromImage(showImg))
 
+    @staticmethod
     def ShowBGRAPic(cvImg,label):
         showImg = cv2.cvtColor(cvImg,cv2.COLOR_BGR2RGBA)
         showImg = QImage(cvImg.data, cvImg.shape[1], cvImg.shape[0], cvImg.shape[1]*4,QImage.Format_ARGB32)
         label.setPixmap(QPixmap.fromImage(showImg))
         print("Show RGBA Image")
 
-
+    @staticmethod
     def PrintSimpleImgInfo(cvImg , label):
         SI.imgChannel = SI.returnChannelNum(SI.processingImgQueue[0])
         SI.ui.labelShowImgInfo.setText("Size:%dx%d Channel:%d" % (SI.curW, SI.curH,SI.imgChannel))
 
+    @staticmethod
     def returnChannelNum(cvImg):
         try:
             imgChannel = cvImg.shape[2]
@@ -73,9 +73,10 @@ class SI:
             imgChannel = 1
         return imgChannel
 
-    def returnImgType(self,cvImg):
+    @staticmethod
+    def returnImgType(cvImg):
         if(cvImg.dtype == "uint8"):
-            channelNum = self.returnChannelNum(cvImg)
+            channelNum = SI.returnChannelNum(cvImg)
             if(channelNum == 4):
                 return "ABGR32"
             elif(channelNum == 3):
@@ -83,12 +84,14 @@ class SI:
             elif(channelNum == 1):
                 return "GrayScale"
 
-    def returnColorDepth(self,cvImg):
+    @staticmethod
+    def returnColorDepth(cvImg):
         if(cvImg.dtype == "uint8"):
-            channelNum = self.returnChannelNum(cvImg)
+            channelNum = SI.returnChannelNum(cvImg)
             return channelNum*8
 
     #测试工具
+    @staticmethod
     def print_img_txt(img):
         i = 0
         j = 0

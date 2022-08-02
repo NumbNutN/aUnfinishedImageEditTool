@@ -10,8 +10,8 @@ from lib.ui_ProcessingQueue import Ui_ProcessingQueue
 #继承类QLabel，为了自定义labael控件的点击效果
 class ExitQLable(QLabel):
     def __init__(self,label):
-        self.label = label
         super().__init__()
+        self.label = label
 
     def mousePressEvent(self, QMouseEvent):
         if QMouseEvent.buttons() == Qt.LeftButton:
@@ -91,12 +91,15 @@ class ProcessingQueue(QWidget,Ui_ProcessingQueue):
         #抽象滚动页面 不会用
         #QAbstractScrollArea(self.vLayoutProcessingQueue)
 
+
+    #回退到历史操作并关闭界面
     def BackToGivenProcessingImg(self):
         SI.processingImgQueue[0:self.selectImgOrder] = []
         #self.hide()
         self.quitProcessingQueue()
 
 
+    #关闭历史操作回退界面，还是有问题，界面上的控件还是没有被删掉
     def quitProcessingQueue(self):
         if self.EmptyNotice:
             self.EmptyNotice.deleteLater()
