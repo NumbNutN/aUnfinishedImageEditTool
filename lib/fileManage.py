@@ -13,6 +13,7 @@ from ui.ui_HistoryFile import Ui_historyFile
 from lib.transparent import Transparent
 from lib.processingQueue import ProcessingQueue
 from lib.edgeDetection import EdgeDetection
+from lib.logAnnouncement import Log
 
 class FIleMenu(QWidget,Ui_historyFile):
     '''
@@ -22,6 +23,8 @@ class FIleMenu(QWidget,Ui_historyFile):
         3. def OpenFile(self,openType,filePath = None,img = None): 实现该工具的三种文件打开方式，把图片装载在历史图片队列里并显示在
 
     '''
+
+    currentSavePath = ""
 
     OPENFILEFROMCUSTOMIZEPATH = 100    #调出资源管理器的路径选择供用户挑选
     OPENFILEFROMEXISTPATH = 101        #从系统记录的已有路径调取
@@ -39,7 +42,6 @@ class FIleMenu(QWidget,Ui_historyFile):
             for path in file:
                 SI.historyFilePath.append(path.strip())
 
-        #print(SI.historyFilePath)
 
         #加载最近打开图片窗口
         super().__init__()
@@ -68,7 +70,7 @@ class FIleMenu(QWidget,Ui_historyFile):
                 SI.mainWindow,
                 "选择图片路径",
                 r"d:",
-                "(*.png *.jpg *.bmp)"
+                "图片类型(*.png *.jpg *.bmp)"
             )
             SI.cvImg = self.readFile(filePath)
             print("Open a file from customaize path")
@@ -113,10 +115,15 @@ class FIleMenu(QWidget,Ui_historyFile):
 
 
     def SaveFile(self):
-        filePath = QFileDialog.getExistingDirectory(SI.mainWindow,"选择保存的路径")
-        print(filePath+"/TempName.jpg")
 
-        cv2.imwrite(filePath+"/TempName.jpg",SI.processingImgQueue[0])
+        if (self.currentSavePath is ""):
+            filePath = QFileDialog.getExistingDirectory(SI.mainWindow,"选择保存的路径")
+            Log.logSavingFile(SI.mainWindow.textBrowserLog,filePath,SI.suffix+".jpg")
+            cv2.imwrite(filePath+'/'+SI.suffix+".jpg",SI.processingImgQueue[0])
+        else:
+            cv2.imwrite(self.currentSavePath + SI.suffix + ".jpg", SI.processingImgQueue[0])
+        self.currentSavePath = filePath
+        Log.logSavedFile(SI.mainWindow.textBrowserLog)
 
     def WrapOutHistory(self):
         SI.historyFilePath = []

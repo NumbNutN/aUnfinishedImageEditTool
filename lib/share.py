@@ -21,6 +21,8 @@ class SI:
     cSamW = 40
     cSamH = 40
 
+    suffix = ''
+
     colorSample = np.zeros((cSamW,cSamH,3))
     colorRGBSample = np.zeros((cSamW,cSamH,3))
 
@@ -34,6 +36,11 @@ class SI:
         cls.processingImgQueue.insert(0, cls.cvImg)
         cls.oriW = cls.curW = cls.cvImg.shape[1]
         cls.oriH = cls.curH = cls.cvImg.shape[0]
+
+        #读取预存保存文件后缀名
+        with open("./suffix.txt") as file:
+            for suffix in file:
+                cls.suffix = suffix
 
     @staticmethod
     def ShowBGRPic(cvImg, label):

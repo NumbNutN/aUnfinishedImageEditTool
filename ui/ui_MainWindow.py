@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'MainWindowQmVJXi.ui'
+## Form generated from reading UI file 'MainWindowLCjTbC.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.2
 ##
@@ -17,7 +17,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(616, 449)
+        MainWindow.resize(616, 443)
         self.fileOpenAction = QAction(MainWindow)
         self.fileOpenAction.setObjectName(u"fileOpenAction")
         self.saveAsAction = QAction(MainWindow)
@@ -40,6 +40,10 @@ class Ui_MainWindow(object):
         self.cleanHistoryAction.setObjectName(u"cleanHistoryAction")
         self.actionViewProcessingQueue = QAction(MainWindow)
         self.actionViewProcessingQueue.setObjectName(u"actionViewProcessingQueue")
+        self.actionSuffix = QAction(MainWindow)
+        self.actionSuffix.setObjectName(u"actionSuffix")
+        self.actionSave = QAction(MainWindow)
+        self.actionSave.setObjectName(u"actionSave")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.verticalLayout_12 = QVBoxLayout(self.centralwidget)
@@ -627,6 +631,11 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_9.addWidget(self.labelShowImgInfo)
 
+        self.textBrowserLog = QTextBrowser(self.centralwidget)
+        self.textBrowserLog.setObjectName(u"textBrowserLog")
+
+        self.verticalLayout_9.addWidget(self.textBrowserLog)
+
         self.saveImg = QPushButton(self.centralwidget)
         self.saveImg.setObjectName(u"saveImg")
 
@@ -634,7 +643,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_9.setStretch(1, 5)
         self.verticalLayout_9.setStretch(2, 1)
-        self.verticalLayout_9.setStretch(3, 1)
+        self.verticalLayout_9.setStretch(4, 1)
 
         self.verticalLayout_12.addLayout(self.verticalLayout_9)
 
@@ -648,6 +657,8 @@ class Ui_MainWindow(object):
         self.menu_2.setObjectName(u"menu_2")
         self.menu_3 = QMenu(self.menubar)
         self.menu_3.setObjectName(u"menu_3")
+        self.menu = QMenu(self.menubar)
+        self.menu.setObjectName(u"menu")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -659,12 +670,15 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.fileSetting.menuAction())
         self.menubar.addAction(self.menu_2.menuAction())
         self.menubar.addAction(self.menu_3.menuAction())
+        self.menubar.addAction(self.menu.menuAction())
         self.fileSetting.addAction(self.fileOpenAction)
         self.fileSetting.addAction(self.saveAsAction)
         self.fileSetting.addAction(self.recentFileAction)
         self.fileSetting.addAction(self.cleanHistoryAction)
+        self.fileSetting.addAction(self.actionSave)
         self.menu_2.addAction(self.actionBack)
         self.menu_2.addAction(self.actionViewProcessingQueue)
+        self.menu.addAction(self.actionSuffix)
         self.toolBar.addAction(self.convertToGrayScaleAction)
         self.toolBar.addAction(self.action_4)
         self.toolBar.addAction(self.action_5)
@@ -681,16 +695,42 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.fileOpenAction.setText(QCoreApplication.translate("MainWindow", u"\u6253\u5f00", None))
+#if QT_CONFIG(shortcut)
+        self.fileOpenAction.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+O", None))
+#endif // QT_CONFIG(shortcut)
         self.saveAsAction.setText(QCoreApplication.translate("MainWindow", u"\u53e6\u5b58\u4e3a", None))
+#if QT_CONFIG(shortcut)
+        self.saveAsAction.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+A", None))
+#endif // QT_CONFIG(shortcut)
         self.recentFileAction.setText(QCoreApplication.translate("MainWindow", u"\u6700\u8fd1\u6253\u5f00", None))
+#if QT_CONFIG(shortcut)
+        self.recentFileAction.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+R", None))
+#endif // QT_CONFIG(shortcut)
         self.actionBack.setText(QCoreApplication.translate("MainWindow", u"\u56de\u9000\u4e0a\u4e00\u6b65", None))
+#if QT_CONFIG(shortcut)
+        self.actionBack.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+Z", None))
+#endif // QT_CONFIG(shortcut)
         self.convertToGrayScaleAction.setText(QCoreApplication.translate("MainWindow", u"\u7ebf\u6761", None))
         self.action_3.setText(QCoreApplication.translate("MainWindow", u"\u523b\u5f55\u65f6\u95f4\u8f74", None))
         self.action_4.setText(QCoreApplication.translate("MainWindow", u"\u77e9\u5f62", None))
         self.action_5.setText(QCoreApplication.translate("MainWindow", u"\u53d6\u8272", None))
         self.action_6.setText(QCoreApplication.translate("MainWindow", u"\u6587\u672c", None))
         self.cleanHistoryAction.setText(QCoreApplication.translate("MainWindow", u"\u6e05\u9664\u5386\u53f2\u6253\u5f00\u8bb0\u5f55", None))
+#if QT_CONFIG(shortcut)
+        self.cleanHistoryAction.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+D", None))
+#endif // QT_CONFIG(shortcut)
         self.actionViewProcessingQueue.setText(QCoreApplication.translate("MainWindow", u"\u67e5\u9605\u64cd\u4f5c\u961f\u5217", None))
+#if QT_CONFIG(shortcut)
+        self.actionViewProcessingQueue.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+Q", None))
+#endif // QT_CONFIG(shortcut)
+        self.actionSuffix.setText(QCoreApplication.translate("MainWindow", u"\u6587\u4ef6\u540e\u7f00\u540d", None))
+#if QT_CONFIG(shortcut)
+        self.actionSuffix.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+U", None))
+#endif // QT_CONFIG(shortcut)
+        self.actionSave.setText(QCoreApplication.translate("MainWindow", u"\u4fdd\u5b58", None))
+#if QT_CONFIG(shortcut)
+        self.actionSave.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+S", None))
+#endif // QT_CONFIG(shortcut)
         self.cboxCvtToGrayScale.setText(QCoreApplication.translate("MainWindow", u"\u8f6c\u5316\u4e3a\u7070\u5ea6\u56fe", None))
         self.tabWidgetFunction.setTabText(self.tabWidgetFunction.indexOf(self.tabGrayscale), QCoreApplication.translate("MainWindow", u"\u7070\u5ea6", None))
         self.cBoxCvtMargin.setText(QCoreApplication.translate("MainWindow", u"\u52fe\u753b\u8fb9\u7f18", None))
@@ -750,6 +790,7 @@ class Ui_MainWindow(object):
         self.fileSetting.setTitle(QCoreApplication.translate("MainWindow", u"\u6587\u4ef6", None))
         self.menu_2.setTitle(QCoreApplication.translate("MainWindow", u"\u7f16\u8f91", None))
         self.menu_3.setTitle(QCoreApplication.translate("MainWindow", u"\u5173\u4e8e", None))
+        self.menu.setTitle(QCoreApplication.translate("MainWindow", u"\u8bbe\u7f6e", None))
         self.toolBar.setWindowTitle(QCoreApplication.translate("MainWindow", u"toolBar", None))
     # retranslateUi
 

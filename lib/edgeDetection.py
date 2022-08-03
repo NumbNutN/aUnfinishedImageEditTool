@@ -48,12 +48,8 @@ class EdgeDetection:
     def FindEdge(self):
         #判断边缘检测checkBox是否选中
         if (SI.mainWindow.cBoxCvtMargin.isChecked()):
-            #判断选中的描述边缘的方法为canny算法
-            if (SI.mainWindow.rBtnCanny.isChecked()):
-                SI.processingImgQueue[0] = cv2.Canny(SI.processingImgQueue[1],0,SI.mainWindow.sliderMarginAdjustStrength.value())
-                SI.ShowBGRPic(SI.processingImgQueue[0], SI.mainWindow.labelImgViewpot)
-            #为sobel算子
-            else:
+            #判断是否为sobel算子并生成正反两种灰度图存储在内存
+            if (SI.mainWindow.rBtnSobel.isChecked()):
                 #通道数不唯一则sobel卷积前转化成灰度图
                 if(SI.returnChannelNum(SI.processingImgQueue[1])!=1):
                     grayImg = cv2.cvtColor(SI.processingImgQueue[1],cv2.COLOR_BGR2GRAY)
@@ -63,7 +59,8 @@ class EdgeDetection:
                 sobely = cv2.Sobel(grayImg, -1, 0, 1, ksize=3)
                 self.tempEdgeImg = cv2.addWeighted(sobelx, 0.5, sobely, 0.5, 0)
                 self.tempFlipImg = self.FlipImg(self.tempEdgeImg)
-                self.RowAndFilmChange()
+
+            self.RowAndFilmChange()
         else:
             SI.processingImgQueue[0] = SI.processingImgQueue[1]
             SI.ShowBGRPic(SI.processingImgQueue[0], SI.mainWindow.labelImgViewpot)
@@ -96,6 +93,29 @@ class EdgeDetection:
             SI.ShowBGRPic(SI.processingImgQueue[0], SI.mainWindow.labelImgViewpot)
             SI.mainWindow.labelEdgeStrength.setText(str(SI.mainWindow.sliderMarginAdjustStrength.value()))
 
+
+    def RowAndFilmChange(self):
+        #判断边缘检测checkBox是否选中
+        #解决的问题：canny选择底片不会自动转成底片
+        if(SI.mainWindow.cBoxCvtMargin.isChecked()):
+
+            #判断是否为sobel算子
+            if (SI.mainWindow.rBtnSobel.isChecked()):
+                if(SI.mainWindow.rbtnRow.isChecked()):
+                    SI.processingImgQueue[0] = self.tempEdgeImg
+                    print("row")
+                else:
+                    SI.processingImgQueue[0] = self.tempFlipImg
+                    print("film")
+
+            else:
+                SI.processingImgQueue[0] = cv2.Canny(SI.processingImgQueue[1], 0,SI.mainWindow.sliderMarginAdjustStrength.value())
+                if (SI.mainWindow.rbtnFilm.isChecked()):
+                    SI.processingImgQueue[0] = self.FlipImg(SI.processingImgQueue[0])
+
+            SI.ShowGrayPic(SI.processingImgQueue[0], SI.mainWindow.labelImgViewpot)
+
+
     def FlipImg(self,img):
         newImg = np.copy(img)
         i = 0
@@ -107,17 +127,5 @@ class EdgeDetection:
             j = 0
             i += 1
         return newImg
-
-    def RowAndFilmChange(self):
-        if(SI.mainWindow.cBoxCvtMargin.isChecked()):
-            
-
-            if(SI.mainWindow.rbtnRow.isChecked()):
-                SI.processingImgQueue[0] = self.tempEdgeImg
-                print("row")
-            else:
-                SI.processingImgQueue[0] = self.tempFlipImg
-                print("film")
-            SI.ShowGrayPic(SI.processingImgQueue[0], SI.mainWindow.labelImgViewpot)
 
 

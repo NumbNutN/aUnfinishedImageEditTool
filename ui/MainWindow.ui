@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>616</width>
-    <height>449</height>
+    <height>443</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_12">
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout_9" stretch="0,5,1,1">
+     <layout class="QVBoxLayout" name="verticalLayout_9" stretch="0,5,1,0,1">
       <item>
        <widget class="QTabWidget" name="tabWidgetFunction">
         <property name="sizePolicy">
@@ -740,6 +740,9 @@
        </widget>
       </item>
       <item>
+       <widget class="QTextBrowser" name="textBrowserLog"/>
+      </item>
+      <item>
        <widget class="QPushButton" name="saveImg">
         <property name="text">
          <string>保存</string>
@@ -767,6 +770,7 @@
     <addaction name="saveAsAction"/>
     <addaction name="recentFileAction"/>
     <addaction name="cleanHistoryAction"/>
+    <addaction name="actionSave"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -780,9 +784,16 @@
      <string>关于</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>设置</string>
+    </property>
+    <addaction name="actionSuffix"/>
+   </widget>
    <addaction name="fileSetting"/>
    <addaction name="menu_2"/>
    <addaction name="menu_3"/>
+   <addaction name="menu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -804,20 +815,32 @@
    <property name="text">
     <string>打开</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
   </action>
   <action name="saveAsAction">
    <property name="text">
     <string>另存为</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
    </property>
   </action>
   <action name="recentFileAction">
    <property name="text">
     <string>最近打开</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
   </action>
   <action name="actionBack">
    <property name="text">
     <string>回退上一步</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
    </property>
   </action>
   <action name="convertToGrayScaleAction">
@@ -849,18 +872,40 @@
    <property name="text">
     <string>清除历史打开记录</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
   </action>
   <action name="actionViewProcessingQueue">
    <property name="text">
     <string>查阅操作队列</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionSuffix">
+   <property name="text">
+    <string>文件后缀名</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+U</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>保存</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
    </property>
   </action>
  </widget>
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="bGroupRatioOrNot"/>
   <buttongroup name="bGroupMarginBackground"/>
   <buttongroup name="bGroupEdgeMethod"/>
+  <buttongroup name="bGroupRatioOrNot"/>
  </buttongroups>
 </ui>
