@@ -25,13 +25,7 @@ class SI:
     colorRGBSample = np.zeros((cSamW,cSamH,3))
 
     def __init__(self):
-        self.cvImg = None
-        self.processingImgQueue = []
-        self.oriW = 0
-        self.oriH = 0
-        self.curW = None
-        self.curH = None
-        self.historyFilePath = []
+        pass
 
     @classmethod
     def InitImg(cls):
@@ -63,7 +57,7 @@ class SI:
     @staticmethod
     def PrintSimpleImgInfo(cvImg , label):
         SI.imgChannel = SI.returnChannelNum(SI.processingImgQueue[0])
-        SI.ui.labelShowImgInfo.setText("Size:%dx%d Channel:%d" % (SI.curW, SI.curH,SI.imgChannel))
+        SI.mainWindow.labelShowImgInfo.setText("Size:%dx%d Channel:%d" % (SI.curW, SI.curH,SI.imgChannel))
 
     @staticmethod
     def returnChannelNum(cvImg):

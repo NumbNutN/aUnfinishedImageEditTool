@@ -1,11 +1,20 @@
 from lib.share import SI
 import cv2
 import numpy as np
-from PySide2.QtWidgets import QApplication ,QMessageBox ,QTableWidgetItem ,QFileDialog ,QLabel ,QSlider
+from PySide2.QtWidgets import *
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtCore import *
+from ui.ui_MainWindow import Ui_MainWindow
 
-class FIleMenu:
+import cv2
+from lib.share import SI
+from lib.resize import Resize
+from ui.ui_HistoryFile import Ui_historyFile
+from lib.transparent import Transparent
+from lib.processingQueue import ProcessingQueue
+from lib.edgeDetection import EdgeDetection
+
+class FIleMenu(QWidget,Ui_historyFile):
     '''
     这个类负责管理文件选项卡,功能包括
         1. def __init__(self): 为主窗口的文件选项卡设置触发事件，同时加载历史打开文件窗口
@@ -19,9 +28,9 @@ class FIleMenu:
     OPENFILEFROMMEMORY = 102           #从内存中存在的图片调取
 
     def __init__(self):
-        SI.ui.fileOpenAction.triggered.connect(lambda: self.OpenFile(self.OPENFILEFROMCUSTOMIZEPATH))
-        SI.ui.saveAsAction.triggered.connect(self.SaveFile)
-        SI.ui.cleanHistoryAction.triggered.connect(self.WrapOutHistory)
+        SI.mainWindow.fileOpenAction.triggered.connect(lambda: self.OpenFile(self.OPENFILEFROMCUSTOMIZEPATH))
+        SI.mainWindow.saveAsAction.triggered.connect(self.SaveFile)
+        SI.mainWindow.cleanHistoryAction.triggered.connect(self.WrapOutHistory)
         SI.historyFilePath = []
 
         #读取历史图片路径
@@ -33,13 +42,15 @@ class FIleMenu:
         #print(SI.historyFilePath)
 
         #加载最近打开图片窗口
-        qfile_historyFile_stats = QFile("./HistoryFile.ui")
-        qfile_historyFile_stats.open(QFile.ReadOnly)
-        qfile_historyFile_stats.close()
-        SI.historyPathViewUi = QUiLoader().load(qfile_historyFile_stats)
-        SI.ui.recentFileAction.triggered.connect(self.ViewRecentFile)
-        SI.historyPathViewUi.listHistoryFile.itemClicked.connect(self.RecentFileShowCurrentItem)
-        SI.historyPathViewUi.btnVerifyHistoryFile.clicked.connect(self.SelectAnHistoryFile)
+        super().__init__()
+        self.setupUi(self)
+        # qfile_historyFile_stats = QFile("./HistoryFile.ui")
+        # qfile_historyFile_stats.open(QFile.ReadOnly)
+        # qfile_historyFile_stats.close()
+        # SI.historyPathViewUi = QUiLoader().load(qfile_historyFile_stats)
+        SI.mainWindow.recentFileAction.triggered.connect(self.ViewRecentFile)
+        self.listHistoryFile.itemClicked.connect(self.RecentFileShowCurrentItem)
+        self.btnVerifyHistoryFile.clicked.connect(self.SelectAnHistoryFile)
 
     #兼容中文的读取方案
     def readFile(self,filePath):
@@ -54,7 +65,7 @@ class FIleMenu:
     def OpenFile(self,openType,filePath = None,img = None):
         if (openType == self.OPENFILEFROMCUSTOMIZEPATH):
             filePath,fileType = QFileDialog.getOpenFileName(
-                SI.ui,
+                SI.mainWindow,
                 "选择图片路径",
                 r"d:",
                 "(*.png *.jpg *.bmp)"
@@ -73,7 +84,7 @@ class FIleMenu:
         if SI.cvImg is not None:
             SI.processingImgQueue.insert(0,SI.cvImg)
             SI.processingImgQueue.insert(0, SI.cvImg)
-            SI.ShowBGRPic(SI.processingImgQueue[0],SI.ui.labelImgViewpot)
+            SI.ShowBGRPic(SI.processingImgQueue[0],SI.mainWindow.labelImgViewpot)
             SI.oriW = SI.curW = SI.cvImg.shape[1]
             SI.oriH = SI.curH = SI.cvImg.shape[0]
             SI.resize = Resize()
@@ -98,11 +109,11 @@ class FIleMenu:
 
         # #适当调整图片大小的逻辑
         # if(SI.cvImg.shape[1]>1280 or SI.cvImg.shape[0]>720):
-        #     SI.ui.labelImgViewpot.setMaximumSize(1280,int(1280/SI.curW*SI.curH))
+        #     SI.mainWindow.labelImgViewpot.setMaximumSize(1280,int(1280/SI.curW*SI.curH))
 
 
     def SaveFile(self):
-        filePath = QFileDialog.getExistingDirectory(SI.ui,"选择保存的路径")
+        filePath = QFileDialog.getExistingDirectory(SI.mainWindow,"选择保存的路径")
         print(filePath+"/TempName.jpg")
 
         cv2.imwrite(filePath+"/TempName.jpg",SI.processingImgQueue[0])
@@ -113,18 +124,18 @@ class FIleMenu:
             file.write('')
 
     def RenewListFileHistory(self):
-        SI.historyPathViewUi.listHistoryFile.clear()
+        self.listHistoryFile.clear()
         for path in SI.historyFilePath:
-            SI.historyPathViewUi.listHistoryFile.addItem(path)
+            self.listHistoryFile.addItem(path)
 
     def ViewRecentFile(self):
         self.RenewListFileHistory()
-        SI.historyPathViewUi.show()
+        self.show()
 
     def RecentFileShowCurrentItem(self):
-        path = SI.historyPathViewUi.listHistoryFile.currentItem().text()
+        path = self.listHistoryFile.currentItem().text()
         imgCvPreview = self.readFile(path)
-        SI.ShowBGRPic(imgCvPreview,SI.historyPathViewUi.labelHistoryPreview)
+        SI.ShowBGRPic(imgCvPreview,self.labelHistoryPreview)
 
         # try:
         #     channelsNum = imgCvPreview.shape[2]
@@ -136,12 +147,12 @@ class FIleMenu:
         channelsNum = SI.returnChannelNum(imgCvPreview)
         imgType = SI.returnImgType(imgCvPreview)
 
-        SI.historyPathViewUi.labelPreviewInfo.setText(
+        self.labelPreviewInfo.setText(
             "size: "+str(imgCvPreview.shape[1])+'x'+str(imgCvPreview.shape[0])+'\t'+
             "channels: "+str(channelsNum)+'\t'+"type: "+imgType)
 
     def SelectAnHistoryFile(self):
-        path = SI.historyPathViewUi.listHistoryFile.currentItem().text()
+        path = self.listHistoryFile.currentItem().text()
         self.OpenFile(self.OPENFILEFROMEXISTPATH,filePath=path)
-        SI.historyPathViewUi.hide()
+        self.hide()
 

@@ -1,11 +1,9 @@
 from lib.share import SI
 import cv2
-import numpy as np
 #from PySide2.QtWidgets import QApplication ,QMessageBox ,QTableWidgetItem ,QFileDialog ,QLabel ,QSlider, QListWidgetItem, QAbstractScrollArea
 from PySide2.QtWidgets import *
-from PySide2.QtUiTools import QUiLoader
 from PySide2.QtCore import *
-from lib.ui_ProcessingQueue import Ui_ProcessingQueue
+from ui.ui_ProcessingQueue import Ui_ProcessingQueue
 
 #继承类QLabel，为了自定义labael控件的点击效果
 class ExitQLable(QLabel):
@@ -47,7 +45,7 @@ class ProcessingQueue(QWidget,Ui_ProcessingQueue):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        SI.ui.actionViewProcessingQueue.triggered.connect(self.LoadProcessingImg)
+        SI.mainWindow.actionViewProcessingQueue.triggered.connect(self.LoadProcessingImg)
         self.btnBack.clicked.connect(self.BackToGivenProcessingImg)
 
 

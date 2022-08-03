@@ -19,104 +19,104 @@ class Transparent:
     def __init__(self):
 
         # 设置深浅色
-        SI.ui.cBoxLight.setChecked(True)
+        SI.mainWindow.cBoxLight.setChecked(True)
 
         # 设置宽度滑块最大/小值
-        SI.ui.sliderLight.setMinimum(0)
-        SI.ui.sliderLight.setMaximum(255)
-        SI.ui.sliderDark.setMinimum(0)
-        SI.ui.sliderDark.setMaximum(255)
+        SI.mainWindow.sliderLight.setMinimum(0)
+        SI.mainWindow.sliderLight.setMaximum(255)
+        SI.mainWindow.sliderDark.setMinimum(0)
+        SI.mainWindow.sliderDark.setMaximum(255)
 
-        SI.ui.sliderRHigh.setMinimum(0)
-        SI.ui.sliderRHigh.setMaximum(255)
-        SI.ui.sliderGHigh.setMinimum(0)
-        SI.ui.sliderGHigh.setMaximum(255)
-        SI.ui.sliderBHigh.setMinimum(0)
-        SI.ui.sliderBHigh.setMaximum(255)
+        SI.mainWindow.sliderRHigh.setMinimum(0)
+        SI.mainWindow.sliderRHigh.setMaximum(255)
+        SI.mainWindow.sliderGHigh.setMinimum(0)
+        SI.mainWindow.sliderGHigh.setMaximum(255)
+        SI.mainWindow.sliderBHigh.setMinimum(0)
+        SI.mainWindow.sliderBHigh.setMaximum(255)
 
-        SI.ui.sliderRLow.setMinimum(0)
-        SI.ui.sliderRLow.setMaximum(255)
-        SI.ui.sliderGLow.setMinimum(0)
-        SI.ui.sliderGLow.setMaximum(255)
-        SI.ui.sliderBLow.setMinimum(0)
-        SI.ui.sliderBLow.setMaximum(255)
+        SI.mainWindow.sliderRLow.setMinimum(0)
+        SI.mainWindow.sliderRLow.setMaximum(255)
+        SI.mainWindow.sliderGLow.setMinimum(0)
+        SI.mainWindow.sliderGLow.setMaximum(255)
+        SI.mainWindow.sliderBLow.setMinimum(0)
+        SI.mainWindow.sliderBLow.setMaximum(255)
 
         # 设置步长
-        SI.ui.sliderDark.setSingleStep(1)
-        SI.ui.sliderLight.setSingleStep(1)
+        SI.mainWindow.sliderDark.setSingleStep(1)
+        SI.mainWindow.sliderLight.setSingleStep(1)
 
-        SI.ui.sliderRHigh.setSingleStep(1)
-        SI.ui.sliderGHigh.setSingleStep(1)
-        SI.ui.sliderBHigh.setSingleStep(1)
+        SI.mainWindow.sliderRHigh.setSingleStep(1)
+        SI.mainWindow.sliderGHigh.setSingleStep(1)
+        SI.mainWindow.sliderBHigh.setSingleStep(1)
 
-        SI.ui.sliderRLow.setSingleStep(1)
-        SI.ui.sliderGLow.setSingleStep(1)
-        SI.ui.sliderBLow.setSingleStep(1)
+        SI.mainWindow.sliderRLow.setSingleStep(1)
+        SI.mainWindow.sliderGLow.setSingleStep(1)
+        SI.mainWindow.sliderBLow.setSingleStep(1)
 
         # 设置当前值
-        SI.ui.sliderDark.setValue(255)
-        SI.ui.sliderLight.setValue(255)
+        SI.mainWindow.sliderDark.setValue(255)
+        SI.mainWindow.sliderLight.setValue(255)
 
-        SI.ui.sliderRHigh.setValue(255)
-        SI.ui.sliderGHigh.setValue(255)
-        SI.ui.sliderBHigh.setValue(255)
+        SI.mainWindow.sliderRHigh.setValue(255)
+        SI.mainWindow.sliderGHigh.setValue(255)
+        SI.mainWindow.sliderBHigh.setValue(255)
 
-        SI.ui.sliderRLow.setValue(0)
-        SI.ui.sliderGLow.setValue(0)
-        SI.ui.sliderBLow.setValue(0)
+        SI.mainWindow.sliderRLow.setValue(0)
+        SI.mainWindow.sliderGLow.setValue(0)
+        SI.mainWindow.sliderBLow.setValue(0)
 
-        #SI.ui.labelEdgeStrength.setText(str(SI.ui.sliderDarkAndLight.value()))
+        #SI.mainWindow.labelEdgeStrength.setText(str(SI.mainWindow.sliderDarkAndLight.value()))
 
         # 设置刻度的位置，刻度在下方
-        SI.ui.sliderLight.setTickPosition(QSlider.TicksBelow)
-        SI.ui.sliderDark.setTickPosition(QSlider.TicksBelow)
+        SI.mainWindow.sliderLight.setTickPosition(QSlider.TicksBelow)
+        SI.mainWindow.sliderDark.setTickPosition(QSlider.TicksBelow)
 
         # 设置刻度的间隔
-        SI.ui.sliderDark.setTickInterval(int(1 / 5 * 255))
-        SI.ui.sliderLight.setTickInterval(int(1 / 5 * 255))
+        SI.mainWindow.sliderDark.setTickInterval(int(1 / 5 * 255))
+        SI.mainWindow.sliderLight.setTickInterval(int(1 / 5 * 255))
 
         # 设置控件的信号处理函数
-        SI.ui.sliderDark.sliderReleased.connect(lambda: self.AdjustTransparent(self.SLIDERLIGHTANDDARK))
-        SI.ui.sliderLight.sliderReleased.connect(lambda: self.AdjustTransparent(self.SLIDERLIGHTANDDARK))
+        SI.mainWindow.sliderDark.sliderReleased.connect(lambda: self.AdjustTransparent(self.SLIDERLIGHTANDDARK))
+        SI.mainWindow.sliderLight.sliderReleased.connect(lambda: self.AdjustTransparent(self.SLIDERLIGHTANDDARK))
 
 
 
-        SI.ui.sliderRHigh.sliderReleased.connect(lambda: self.AdjustTransparent(self.SLIDERCOLOR))
-        SI.ui.sliderGHigh.sliderReleased.connect(lambda: self.AdjustTransparent(self.SLIDERCOLOR))
-        SI.ui.sliderBHigh.sliderReleased.connect(lambda: self.AdjustTransparent(self.SLIDERCOLOR))
+        SI.mainWindow.sliderRHigh.sliderReleased.connect(lambda: self.AdjustTransparent(self.SLIDERCOLOR))
+        SI.mainWindow.sliderGHigh.sliderReleased.connect(lambda: self.AdjustTransparent(self.SLIDERCOLOR))
+        SI.mainWindow.sliderBHigh.sliderReleased.connect(lambda: self.AdjustTransparent(self.SLIDERCOLOR))
 
-        SI.ui.sliderRLow.sliderReleased.connect(lambda: self.AdjustTransparent(self.SLIDERCOLOR))
-        SI.ui.sliderGLow.sliderReleased.connect(lambda: self.AdjustTransparent(self.SLIDERCOLOR))
-        SI.ui.sliderBLow.sliderReleased.connect(lambda: self.AdjustTransparent(self.SLIDERCOLOR))
+        SI.mainWindow.sliderRLow.sliderReleased.connect(lambda: self.AdjustTransparent(self.SLIDERCOLOR))
+        SI.mainWindow.sliderGLow.sliderReleased.connect(lambda: self.AdjustTransparent(self.SLIDERCOLOR))
+        SI.mainWindow.sliderBLow.sliderReleased.connect(lambda: self.AdjustTransparent(self.SLIDERCOLOR))
 
         #显示滑动条改变后的值和样式
-        SI.ui.sliderLight.valueChanged.connect(
-            lambda: self.showSliderValue(SI.ui.labelLightValue, SI.ui.sliderLight,self.SLIDERLIGHTANDDARK,SI.ui.labelLightSample))
-        SI.ui.sliderDark.valueChanged.connect(
-            lambda: self.showSliderValue(SI.ui.labelDarkValue, SI.ui.sliderDark,self.SLIDERLIGHTANDDARK,SI.ui.labelDarkSample))
+        SI.mainWindow.sliderLight.valueChanged.connect(
+            lambda: self.showSliderValue(SI.mainWindow.labelLightValue, SI.mainWindow.sliderLight,self.SLIDERLIGHTANDDARK,SI.mainWindow.labelLightSample))
+        SI.mainWindow.sliderDark.valueChanged.connect(
+            lambda: self.showSliderValue(SI.mainWindow.labelDarkValue, SI.mainWindow.sliderDark,self.SLIDERLIGHTANDDARK,SI.mainWindow.labelDarkSample))
 
-        SI.ui.sliderRHigh.valueChanged.connect(
-            lambda: self.showSliderValue(SI.ui.labelRHighValue, SI.ui.sliderRHigh,self.SLIDERHCOLOR,SI.ui.labelCHighSample))
-        SI.ui.sliderGHigh.valueChanged.connect(
-            lambda: self.showSliderValue(SI.ui.labelGHighValue, SI.ui.sliderGHigh,self.SLIDERHCOLOR,SI.ui.labelCHighSample))
-        SI.ui.sliderBHigh.valueChanged.connect(
-            lambda: self.showSliderValue(SI.ui.labelBHighValue, SI.ui.sliderBHigh,self.SLIDERHCOLOR,SI.ui.labelCHighSample))
-        SI.ui.sliderRLow.valueChanged.connect(
-            lambda: self.showSliderValue(SI.ui.labelRLowValue, SI.ui.sliderRLow,self.SLIDERLCOLOR,SI.ui.labelCLowSample))
-        SI.ui.sliderGLow.valueChanged.connect(
-            lambda: self.showSliderValue(SI.ui.labelGLowValue, SI.ui.sliderGLow,self.SLIDERLCOLOR,SI.ui.labelCLowSample))
-        SI.ui.sliderBLow.valueChanged.connect(
-            lambda: self.showSliderValue(SI.ui.labelBLowValue, SI.ui.sliderBLow,self.SLIDERLCOLOR,SI.ui.labelCLowSample))
+        SI.mainWindow.sliderRHigh.valueChanged.connect(
+            lambda: self.showSliderValue(SI.mainWindow.labelRHighValue, SI.mainWindow.sliderRHigh,self.SLIDERHCOLOR,SI.mainWindow.labelCHighSample))
+        SI.mainWindow.sliderGHigh.valueChanged.connect(
+            lambda: self.showSliderValue(SI.mainWindow.labelGHighValue, SI.mainWindow.sliderGHigh,self.SLIDERHCOLOR,SI.mainWindow.labelCHighSample))
+        SI.mainWindow.sliderBHigh.valueChanged.connect(
+            lambda: self.showSliderValue(SI.mainWindow.labelBHighValue, SI.mainWindow.sliderBHigh,self.SLIDERHCOLOR,SI.mainWindow.labelCHighSample))
+        SI.mainWindow.sliderRLow.valueChanged.connect(
+            lambda: self.showSliderValue(SI.mainWindow.labelRLowValue, SI.mainWindow.sliderRLow,self.SLIDERLCOLOR,SI.mainWindow.labelCLowSample))
+        SI.mainWindow.sliderGLow.valueChanged.connect(
+            lambda: self.showSliderValue(SI.mainWindow.labelGLowValue, SI.mainWindow.sliderGLow,self.SLIDERLCOLOR,SI.mainWindow.labelCLowSample))
+        SI.mainWindow.sliderBLow.valueChanged.connect(
+            lambda: self.showSliderValue(SI.mainWindow.labelBLowValue, SI.mainWindow.sliderBLow,self.SLIDERLCOLOR,SI.mainWindow.labelCLowSample))
 
         #显示滑动条数值
-        SI.ui.labelLightValue.setText(str(SI.ui.sliderLight.value()))
-        SI.ui.labelDarkValue.setText(str(SI.ui.sliderDark.value()))
-        SI.ui.labelRHighValue.setText(str(SI.ui.sliderRHigh.value()))
-        SI.ui.labelGHighValue.setText(str(SI.ui.sliderGHigh.value()))
-        SI.ui.labelBHighValue.setText(str(SI.ui.sliderBHigh.value()))
-        SI.ui.labelRLowValue.setText(str(SI.ui.sliderRLow.value()))
-        SI.ui.labelGLowValue.setText(str(SI.ui.sliderGLow.value()))
-        SI.ui.labelBLowValue.setText(str(SI.ui.sliderBLow.value()))
+        SI.mainWindow.labelLightValue.setText(str(SI.mainWindow.sliderLight.value()))
+        SI.mainWindow.labelDarkValue.setText(str(SI.mainWindow.sliderDark.value()))
+        SI.mainWindow.labelRHighValue.setText(str(SI.mainWindow.sliderRHigh.value()))
+        SI.mainWindow.labelGHighValue.setText(str(SI.mainWindow.sliderGHigh.value()))
+        SI.mainWindow.labelBHighValue.setText(str(SI.mainWindow.sliderBHigh.value()))
+        SI.mainWindow.labelRLowValue.setText(str(SI.mainWindow.sliderRLow.value()))
+        SI.mainWindow.labelGLowValue.setText(str(SI.mainWindow.sliderGLow.value()))
+        SI.mainWindow.labelBLowValue.setText(str(SI.mainWindow.sliderBLow.value()))
     
     def changeToBGRA(self,cvImg,rThrHigh,gThrHigh,bThrHigh,rThrLow,gThrLow,bThrLow):
         newImg = cv2.cvtColor(cvImg, cv2.COLOR_BGR2BGRA)
@@ -132,12 +132,12 @@ class Transparent:
 
     def AdjustTransparent(self,sliderType):
         if (sliderType == self.SLIDERLIGHTANDDARK):
-            if(SI.ui.cBoxLight.isChecked()):
-                up = SI.ui.sliderLight.value()
+            if(SI.mainWindow.cBoxLight.isChecked()):
+                up = SI.mainWindow.sliderLight.value()
             else:
                 up = 255
-            if (SI.ui.cBoxDark.isChecked()):
-                down = SI.ui.sliderDark.value()
+            if (SI.mainWindow.cBoxDark.isChecked()):
+                down = SI.mainWindow.sliderDark.value()
             else:
                 down = 0
             SI.processingImgQueue[0] = self.changeToBGRA(SI.processingImgQueue[1], up,up,up,down,down,down)
@@ -146,22 +146,22 @@ class Transparent:
             # SI.processingImgQueue[0] = self.changeToBGRA(SI.processingImgQueue[1], 0,0,0,down,down,down)
 
         elif (sliderType == self.SLIDERCOLOR):
-            if(SI.ui.cBoxColorHigh.isChecked()):
-                rTH = SI.ui.sliderRHigh.value()
-                gTH = SI.ui.sliderGHigh.value()
-                bTH = SI.ui.sliderGHigh.value()
+            if(SI.mainWindow.cBoxColorHigh.isChecked()):
+                rTH = SI.mainWindow.sliderRHigh.value()
+                gTH = SI.mainWindow.sliderGHigh.value()
+                bTH = SI.mainWindow.sliderGHigh.value()
             else:
                 rTH = gTH = bTH = 255
-            if(SI.ui.cBoxColorLow.isChecked()):
-                rTL = SI.ui.sliderRLow.value()
-                gTL = SI.ui.sliderGLow.value()
-                bTL = SI.ui.sliderGLow.value()
+            if(SI.mainWindow.cBoxColorLow.isChecked()):
+                rTL = SI.mainWindow.sliderRLow.value()
+                gTL = SI.mainWindow.sliderGLow.value()
+                bTL = SI.mainWindow.sliderGLow.value()
             else:
                 rTL = gTL = bTL = 0
             SI.processingImgQueue[0] = self.changeToBGRA(SI.processingImgQueue[1],rTH,gTH,bTH,rTL,gTL,bTL)
 
-        SI.ShowBGRAPic(SI.processingImgQueue[0], SI.ui.labelImgViewpot)
-        SI.PrintSimpleImgInfo(SI.processingImgQueue[0],SI.ui.labelImgViewpot)
+        SI.ShowBGRAPic(SI.processingImgQueue[0], SI.mainWindow.labelImgViewpot)
+        SI.PrintSimpleImgInfo(SI.processingImgQueue[0],SI.mainWindow.labelImgViewpot)
         print("setTransparent")
 
     def showSliderValue(self,label,slider,sliderType,clabel,crgblabel=None):
@@ -176,13 +176,13 @@ class Transparent:
         elif(sliderType==self.SLIDERHCOLOR):
             for i in range(SI.cSamW):
                 for j in range(SI.cSamH):
-                    SI.colorSample[i][j]=(SI.ui.sliderBHigh.value(),SI.ui.sliderGHigh.value(),SI.ui.sliderRHigh.value())
+                    SI.colorSample[i][j]=(SI.mainWindow.sliderBHigh.value(),SI.mainWindow.sliderGHigh.value(),SI.mainWindow.sliderRHigh.value())
             SI.ShowBGRPic(SI.colorSample.astype(np.uint8), clabel)
 
         else:
             for i in range(SI.cSamW):
                 for j in range(SI.cSamH):
-                    SI.colorSample[i][j]=(SI.ui.sliderBLow.value(),SI.ui.sliderGLow.value(),SI.ui.sliderRLow.value())
+                    SI.colorSample[i][j]=(SI.mainWindow.sliderBLow.value(),SI.mainWindow.sliderGLow.value(),SI.mainWindow.sliderRLow.value())
             SI.ShowBGRPic(SI.colorSample.astype(np.uint8), clabel)
 
 

@@ -103,13 +103,13 @@
             <item>
              <widget class="QGroupBox" name="groupBox">
               <property name="title">
-               <string>底色</string>
+               <string>选项</string>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
                <item>
-                <widget class="QRadioButton" name="radioButtonPositive">
+                <widget class="QRadioButton" name="rbtnRow">
                  <property name="text">
-                  <string>正向</string>
+                  <string>原片</string>
                  </property>
                  <attribute name="buttonGroup">
                   <string notr="true">bGroupMarginBackground</string>
@@ -117,9 +117,9 @@
                 </widget>
                </item>
                <item>
-                <widget class="QRadioButton" name="radioButtonNagetive">
+                <widget class="QRadioButton" name="rbtnFilm">
                  <property name="text">
-                  <string>反向</string>
+                  <string>底片</string>
                  </property>
                  <attribute name="buttonGroup">
                   <string notr="true">bGroupMarginBackground</string>

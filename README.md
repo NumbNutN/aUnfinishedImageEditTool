@@ -1,5 +1,6 @@
-# aUnfinishedImageEditTool
+# a Unfinished Image Edit Tool
 A unfinished image edit tool which I set up to help me understand pyside2 and python
+
 
 SI:
     processingImgQueue  类型:list  
